@@ -27,6 +27,10 @@ class _TaskListPageState extends State<TaskListPage> {
   @override
   void dispose() {
     titleEditingController.dispose();
+    for(var task in tasks){
+      task.focusNode.dispose();
+      task.textEditingController.dispose();
+    }
     super.dispose();
   }
 
@@ -117,16 +121,38 @@ class _TaskListPageState extends State<TaskListPage> {
               ),
               Expanded(
                 child: ListView.builder(
-                  itemCount: tasks.length,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: tasks.length + 1,
                   itemBuilder: (context, index) {
-                    final task =  tasks[index];
-                    if(task.isEditing){
-                      return TextField(
-                        controller: task.textEditingController,
+                    if (index == tasks.length) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: TextField(),
                       );
-                    }else{
-                      return Text(task.text);
                     }
+                    final task = tasks[index];
+                    return Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              task.done = !task.done;
+                            });
+                          },
+                          child: Icon(
+                            !task.done
+                                ? Icons.square_outlined
+                                : Icons.check_box,
+                          ),
+                        ),
+
+                        Expanded(
+                          child: TextField(
+                                  controller: task.textEditingController,
+                                ),
+                        ),
+                      ],
+                    );
                   },
                 ),
               ),
@@ -148,12 +174,12 @@ List taskTextList = [
 
 class TaskItem {
   final String text;
-  final bool done;
-  final bool isEditing;
+  bool done;
+  bool isEditing;
   final TextEditingController textEditingController;
   final FocusNode focusNode;
 
   TaskItem({required this.text, this.done = false, this.isEditing = false})
-    : textEditingController = TextEditingController(),
+    : textEditingController = TextEditingController(text: text),
       focusNode = FocusNode();
 }
