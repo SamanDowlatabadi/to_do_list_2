@@ -78,9 +78,15 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           SizedBox(height: 112.5),
           allPinned == AllListPinnedEnum.allList
-              ? Expanded(child: AllListEmptyStateColumn(newListFunc: (){
-                Navigator.of(context).push(MaterialPageRoute(builder: (context)=>TaskListPage()));
-          },))
+              ? Expanded(
+                  child: AllListEmptyStateColumn(
+                    newListFunc: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => TaskListPage()),
+                      );
+                    },
+                  ),
+                )
               : Expanded(child: AllListPinnedEmptyStateColumn()),
         ],
       ),
