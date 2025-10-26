@@ -1,94 +1,130 @@
 import 'package:custom_sliding_segmented_control/custom_sliding_segmented_control.dart';
 import 'package:flutter/material.dart';
-import 'package:to_do_list/ui/add_edit_list_screen/add_edit_list_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:to_do_list/data/repository/task_list_repository/i_task_list_repository.dart';
+import 'package:to_do_list/ui/common/app_error_widget.dart';
 import 'package:to_do_list/ui/common/utils.dart';
-import 'package:to_do_list/ui/home_screen/empty_state_home.dart';
+import 'package:to_do_list/ui/home_screen/task_widget_in_home_screen.dart';
 
-class HomeScreen extends StatefulWidget {
+import 'home_screen_bloc/home_screen_bloc.dart';
+
+class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  AllListPinnedEnum allPinned = AllListPinnedEnum.allList;
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        actionsPadding: EdgeInsets.only(right: 21),
-        actions: [Icon(Icons.search, size: 27)],
-        titleSpacing: 21,
-        title: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Image.asset('assets/images/app_bar/app_bar_dooit_logo.png'),
-            SizedBox(width: 12),
-            Text('Dooit'),
-          ],
-        ),
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(height: 41),
-          Center(
-            child: CustomSlidingSegmentedControl(
-              fixedWidth: MediaQuery.of(context).size.width / 2 - 48,
-              initialValue: AllListPinnedEnum.allList,
-              innerPadding: EdgeInsets.zero,
-              thumbDecoration: BoxDecoration(
-                color: Colors.black,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              decoration: BoxDecoration(
-                color: Color(0xffE5E5E5),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              height: 47,
-              children: {
-                AllListPinnedEnum.allList: Text(
-                  'All List',
-                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: allPinned == AllListPinnedEnum.allList
-                        ? Colors.white
-                        : Colors.black.withValues(alpha: 0.4),
-                  ),
-                ),
-                AllListPinnedEnum.pinned: Text(
-                  'Pinned',
-                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: allPinned == AllListPinnedEnum.allList
-                        ? Colors.black.withValues(alpha: 0.4)
-                        : Colors.white,
-                  ),
-                ),
+    return BlocProvider(
+      create: (context) {
+        final homeScreenBloc = HomeScreenBloc(
+          taskListRepository: taskListRepository,
+        );
+        homeScreenBloc.add(HomeScreenStarted(isPinned: false));
+        return homeScreenBloc;
+      },
+      child: BlocBuilder<HomeScreenBloc, HomeScreenState>(
+        builder: (context, state) {
+          if (state is HomeScreenLoading) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is HomeScreenError) {
+            return AppErrorWidget(
+              exception: state.exception,
+              onPressed: () {
+                context.read<HomeScreenBloc>().add(HomeScreenRefresh());
               },
-              onValueChanged: (value) {
-                setState(() {
-                  allPinned = value;
-                });
-              },
-            ),
-          ),
-          SizedBox(height: 112.5),
-          allPinned == AllListPinnedEnum.allList
-              ? Expanded(
-                  child: AllListEmptyStateColumn(
-                    newListFunc: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => TaskListPage()),
-                      );
-                    },
+            );
+          } else if (state is HomeScreenSuccess) {
+            return Scaffold(
+              backgroundColor: Colors.white,
+              appBar: AppBar(
+                elevation: 0,
+                shadowColor: Colors.transparent,
+                actionsPadding: EdgeInsets.only(right: 21),
+                actions: [Icon(Icons.search, size: 27)],
+                titleSpacing: 21,
+                title: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Image.asset('assets/images/app_bar/app_bar_dooit_logo.png'),
+                    SizedBox(width: 12),
+                    Text('Dooit'),
+                  ],
+                ),
+              ),
+              body: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(height: 41),
+                  Center(
+                    child: CustomSlidingSegmentedControl(
+                      fixedWidth: MediaQuery.of(context).size.width / 2 - 24,
+                      initialValue: state.isPinned
+                          ? AllListPinnedEnum.pinned
+                          : AllListPinnedEnum.allList,
+                      innerPadding: EdgeInsets.zero,
+                      thumbDecoration: BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      decoration: BoxDecoration(
+                        color: Color(0xffE5E5E5),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      height: 47,
+                      children: {
+                        AllListPinnedEnum.allList: Text(
+                          'All List',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: state.isPinned
+                                ? Colors.black.withAlpha(100)
+                                : Colors.white,
+                          ),
+                        ),
+                        AllListPinnedEnum.pinned: Text(
+                          'Pinned',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: state.isPinned
+                                ? Colors.white
+                                : Colors.black.withAlpha(100),
+                          ),
+                        ),
+                      },
+                      onValueChanged: (value) {
+                        context.read<HomeScreenBloc>().add(
+                          HomeScreenStarted(isPinned: !state.isPinned),
+                        );
+                      },
+                    ),
                   ),
-                )
-              : Expanded(child: AllListPinnedEmptyStateColumn()),
-        ],
+                  SizedBox(height: 50),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: state.taskLists.length,
+                      itemBuilder: (context, index) {
+                        final taskList = state.taskLists[index];
+                        return TaskWidgetInHomeScreen(
+                          taskList: taskList,
+                          toggleTaskListExpansion: ()=>context.read<HomeScreenBloc>().add(HomeScreenToggleTaskListExpanded(taskListID: taskList.taskListID)),
+                          toggleTaskItemCompletion: (taskItemID) {
+                            context.read<HomeScreenBloc>().add(
+                              HomeScreenToggleTaskCompletion(
+                                taskListID: taskList.taskListID,
+                                taskItemID: taskItemID,
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            );
+          } else {
+            throw Exception('State is not supported');
+          }
+        },
       ),
     );
   }

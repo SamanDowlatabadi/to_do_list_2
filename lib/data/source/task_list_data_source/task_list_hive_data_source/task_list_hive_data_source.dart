@@ -1,0 +1,203 @@
+import 'package:hive/hive.dart';
+import 'package:to_do_list/data/source/task_list_data_source/i_task_list_data_source.dart';
+import 'package:to_do_list/data/source/task_list_data_source/task_list_hive_data_source/module/task_list_hive_module.dart';
+import 'package:to_do_list/data/task_item_module.dart';
+import 'package:to_do_list/data/task_list_module.dart';
+import 'mapper/task_item_mapper.dart';
+import 'mapper/task_list_mapper.dart';
+
+class TaskListHiveDataSource implements ITaskListDataSource {
+  static final String boxName = 'taskLists';
+
+  @override
+  Future<List<TaskList>> getAllTaskLists(bool isPinned) async {
+    try {
+      final box = Hive.box<TaskListHiveModule>(boxName);
+      final List<TaskListHiveModule> taskListsHiveModule = box.values.toList();
+      final List<TaskList> taskLists = taskListsHiveModule
+          .map((e) => e.toTaskList())
+          .toList();
+      if (isPinned) {
+        return taskLists.where((taskList) => taskList.taskListPinned).toList();
+      } else {
+        return taskLists;
+      }
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  @override
+  Future<void> addTaskItemToTaskList(
+    String taskListID,
+    TaskItem taskItem,
+  ) async {
+    try {
+      final box = Hive.box<TaskListHiveModule>(boxName);
+      final taskListHiveModule = box.get(taskListID);
+      if (taskListHiveModule == null) {
+        throw Exception('Task List not found');
+      }
+      final taskItemHiveModule = taskItem.toHive();
+
+      taskListHiveModule.taskListItems.add(taskItemHiveModule);
+      await box.put(taskListID, taskListHiveModule);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  @override
+  Future<void> addTaskList(TaskList taskList) async {
+    try {
+      final box = Hive.box<TaskListHiveModule>(boxName);
+      final taskListHiveModule = taskList.toHive();
+      await box.put(taskList.taskListID, taskListHiveModule);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  @override
+  Future<void> deleteTaskItem(String taskListID, String taskItemID) async {
+    try {
+      final box = Hive.box<TaskListHiveModule>(boxName);
+      final taskListHiveModule = box.get(taskListID);
+      if (taskListHiveModule == null) {
+        throw Exception('Task List not found');
+      }
+      if (taskListHiveModule.taskListItems.isEmpty) {
+        throw Exception('Task Item is empty');
+      }
+
+      final taskItemsHiveModule = taskListHiveModule.taskListItems;
+      taskItemsHiveModule.removeWhere((e) => e.taskItemID == taskItemID);
+
+      await box.put(taskListID, taskListHiveModule);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  @override
+  Future<void> deleteTaskList(String taskListID) async {
+    try {
+      final box = Hive.box<TaskListHiveModule>(boxName);
+      if (!box.containsKey(taskListID)) {
+        throw Exception('Task List not found');
+      }
+      await box.delete(taskListID);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  @override
+  Future<void> saveAllTaskLists(List<TaskList> taskLists) async {
+    try {
+      final box = Hive.box<TaskListHiveModule>(boxName);
+      await box.clear();
+      await box.putAll({
+        for (var taskList in taskLists) taskList.taskListID: taskList.toHive(),
+      });
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  @override
+  Future<void> togglePinTaskList(String taskListID, bool isPinned) async {
+    try {
+      final box = Hive.box<TaskListHiveModule>(boxName);
+      final taskListHiveModule = box.get(taskListID);
+      if (taskListHiveModule == null) {
+        throw Exception('Task List not found');
+      }
+
+      taskListHiveModule.taskListPinned = isPinned;
+      await box.put(taskListID, taskListHiveModule);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  @override
+  Future<void> toggleTaskCompletion(
+    String taskListID,
+    String taskItemID,
+  ) async {
+    try {
+      final box = Hive.box<TaskListHiveModule>(boxName);
+      final taskListHiveModule = box.get(taskListID);
+      if (taskListHiveModule == null) {
+        throw Exception('Task List not found');
+      }
+      final indexOfTaskItem = taskListHiveModule.taskListItems.indexWhere(
+        (taskItem) => taskItem.taskItemID == taskItemID,
+      );
+      if (indexOfTaskItem == -1) {
+        throw Exception('Task Item not found');
+      }
+      final taskItemHiveModule =
+          taskListHiveModule.taskListItems[indexOfTaskItem];
+
+      taskItemHiveModule.taskItemIsCompleted =
+          !taskItemHiveModule.taskItemIsCompleted;
+      await box.put(taskListID, taskListHiveModule);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  @override
+  Future<void> toggleTaskListExpansion(String taskListID) async {
+    try {
+      final box = Hive.box<TaskListHiveModule>(boxName);
+      final taskListHiveModule = box.get(taskListID);
+      if (taskListHiveModule == null) {
+        throw Exception('Task List not found');
+      }
+      taskListHiveModule.taskListIsExpanded =
+          !taskListHiveModule.taskListIsExpanded;
+      await box.put(taskListID, taskListHiveModule);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  @override
+  Future<void> updateTaskItem(String taskListID, TaskItem taskItem) async {
+    try {
+      final box = Hive.box<TaskListHiveModule>(boxName);
+      final taskListHiveModule = box.get(taskListID);
+      if (taskListHiveModule == null) {
+        throw Exception('Task List not found');
+      }
+      final indexOfTaskItem = taskListHiveModule.taskListItems.indexWhere(
+        (tempTaskItem) => tempTaskItem.taskItemID == taskItem.taskItemID,
+      );
+      if (indexOfTaskItem == -1) {
+        throw Exception('Task Item not found');
+      }
+
+      taskListHiveModule.taskListItems[indexOfTaskItem] = taskItem.toHive();
+
+      await box.put(taskListID, taskListHiveModule);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  @override
+  Future<void> updateTaskList(TaskList updatedTaskList) async{
+    try {
+      final box = Hive.box<TaskListHiveModule>(boxName);
+      if(!box.containsKey(updatedTaskList.taskListID)){
+        throw Exception('Task List not found');
+      }
+      await box.put(updatedTaskList.taskListID, updatedTaskList.toHive());
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+}

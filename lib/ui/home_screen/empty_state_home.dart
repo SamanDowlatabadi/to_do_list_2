@@ -59,7 +59,8 @@ class AllListEmptyStateColumn extends StatelessWidget {
 
 
 class AllListPinnedEmptyStateColumn extends StatelessWidget {
-  const AllListPinnedEmptyStateColumn({super.key});
+  final VoidCallback newListFunc;
+  const AllListPinnedEmptyStateColumn({super.key, required this.newListFunc});
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +85,7 @@ class AllListPinnedEmptyStateColumn extends StatelessWidget {
         ),
         SizedBox(height: 31),
         ElevatedButton(
-          onPressed: () {},
+          onPressed: newListFunc,
           style: ButtonStyle(
             backgroundColor: WidgetStatePropertyAll(Colors.black),
             fixedSize: WidgetStatePropertyAll(Size(125, 45)),
