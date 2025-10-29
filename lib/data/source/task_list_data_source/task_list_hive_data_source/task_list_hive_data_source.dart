@@ -189,10 +189,10 @@ class TaskListHiveDataSource implements ITaskListDataSource {
   }
 
   @override
-  Future<void> updateTaskList(TaskList updatedTaskList) async{
+  Future<void> updateTaskList(TaskList updatedTaskList) async {
     try {
       final box = Hive.box<TaskListHiveModule>(boxName);
-      if(!box.containsKey(updatedTaskList.taskListID)){
+      if (!box.containsKey(updatedTaskList.taskListID)) {
         throw Exception('Task List not found');
       }
       await box.put(updatedTaskList.taskListID, updatedTaskList.toHive());
@@ -202,7 +202,7 @@ class TaskListHiveDataSource implements ITaskListDataSource {
   }
 
   @override
-  Future<TaskList> getTaskList(String taskListID) async{
+  Future<TaskList> getTaskList(String taskListID) async {
     try {
       final box = Hive.box<TaskListHiveModule>(boxName);
       final taskListHiveModule = box.get(taskListID);

@@ -39,7 +39,11 @@ class AddEditListScreen extends StatelessWidget {
                 actions: [
                   ElevatedButton(
                     onPressed: () {
-                      context.read<AddEditListScreenBloc>().add(AddEditListScreenTaskListExpansion(taskListID: taskListID));
+                      context.read<AddEditListScreenBloc>().add(
+                        AddEditListScreenTaskListTogglePin(
+                          taskListID: taskListID,
+                        ),
+                      );
                     },
                     style: ButtonStyle(
                       backgroundColor: WidgetStateProperty.resolveWith<Color?>((
@@ -78,6 +82,89 @@ class AddEditListScreen extends StatelessWidget {
                     ),
                   ),
                 ],
+              ),
+              body: Padding(
+                padding: const EdgeInsets.only(left: 24, right: 24),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      taskList.taskListTitle,
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 24,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: taskList.taskListItems.length + 1,
+                        itemBuilder: (context, index) {
+                          if (index == taskList.taskListItems.length) {
+                            return ListTile(
+                              key: const ValueKey('add_task'),
+                              contentPadding: const EdgeInsets.only(
+                                left: 0,
+                                right: 0,
+                              ),
+                              leading: const Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(Icons.add, color: Colors.transparent),
+                                  Icon(Icons.add_box_outlined),
+                                ],
+                              ),
+                              title: const Text('To-do'),
+                              onTap: () {},
+                            );
+                          }
+                          final task = taskList.taskListItems[index];
+                          return ListTile(
+                            key: ValueKey(task.taskItemID),
+                            contentPadding: const EdgeInsets.only(
+                              left: 0,
+                              right: 0,
+                            ),
+                            leading: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(Icons.drag_indicator),
+                                GestureDetector(
+                                  onTap: () {
+                                    context.read<AddEditListScreenBloc>().add(
+                                      AddEditListScreenToggleTaskCompletion(
+                                        taskListID: taskListID,
+                                        taskItemID: task.taskItemID,
+                                      ),
+                                    );
+                                  },
+                                  child: Icon(
+                                    !task.taskItemIsCompleted
+                                        ? Icons.check_box_outline_blank
+                                        : Icons.check_box,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            title: Text(
+                              task.taskItemTitle,
+                              style: TextStyle(
+                                decoration: task.taskItemIsCompleted
+                                    ? TextDecoration.lineThrough
+                                    : null,
+                              ),
+                            ),
+                            trailing: GestureDetector(
+                              onTap: () {},
+                              child: const Icon(Icons.delete),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ),
             );
           } else if (state is AddEditListScreenError) {

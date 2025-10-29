@@ -22,7 +22,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
     _initializeSampleData();
   }
 
-  Future<void> _initializeSampleData() async{
+  Future<void> _initializeSampleData() async {
     final repository = TaskListRepository(
       taskListDataSource: TaskListHiveDataSource(),
     );
@@ -47,8 +47,14 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
             taskItemTitle: 'Meeting with manager',
             taskItemIsCompleted: false,
           ),
-          TaskItem(taskItemTitle: 'Plan new sprint', taskItemIsCompleted: false),
-          TaskItem(taskItemTitle: 'Send client email', taskItemIsCompleted: true),
+          TaskItem(
+            taskItemTitle: 'Plan new sprint',
+            taskItemIsCompleted: false,
+          ),
+          TaskItem(
+            taskItemTitle: 'Send client email',
+            taskItemIsCompleted: true,
+          ),
         ],
         taskListLabel: TaskListLabel.work,
       ),
@@ -62,7 +68,10 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
             taskItemTitle: 'Design Home Screen UI',
             taskItemIsCompleted: false,
           ),
-          TaskItem(taskItemTitle: 'Write unit tests', taskItemIsCompleted: false),
+          TaskItem(
+            taskItemTitle: 'Write unit tests',
+            taskItemIsCompleted: false,
+          ),
         ],
         taskListLabel: TaskListLabel.work,
       ),
@@ -87,7 +96,10 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
             taskItemTitle: 'Submit assignment',
             taskItemIsCompleted: false,
           ),
-          TaskItem(taskItemTitle: 'Prepare for exam', taskItemIsCompleted: false),
+          TaskItem(
+            taskItemTitle: 'Prepare for exam',
+            taskItemIsCompleted: false,
+          ),
           TaskItem(
             taskItemTitle: 'Check project group chat',
             taskItemIsCompleted: true,
@@ -101,7 +113,10 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
         taskListPinned: false,
         taskListItems: [
           TaskItem(taskItemTitle: 'Run 5km', taskItemIsCompleted: false),
-          TaskItem(taskItemTitle: 'Drink 2L of water', taskItemIsCompleted: true),
+          TaskItem(
+            taskItemTitle: 'Drink 2L of water',
+            taskItemIsCompleted: true,
+          ),
           TaskItem(taskItemTitle: 'Track calories', taskItemIsCompleted: false),
         ],
         taskListLabel: TaskListLabel.personal,
@@ -147,7 +162,10 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
             taskItemIsCompleted: false,
           ),
           TaskItem(taskItemTitle: 'Take vitamins', taskItemIsCompleted: true),
-          TaskItem(taskItemTitle: 'Meditate 15 mins', taskItemIsCompleted: false),
+          TaskItem(
+            taskItemTitle: 'Meditate 15 mins',
+            taskItemIsCompleted: false,
+          ),
         ],
         taskListLabel: TaskListLabel.personal,
       ),
@@ -156,18 +174,20 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
         taskListIsExpanded: false,
         taskListPinned: false,
         taskListItems: [
-          TaskItem(taskItemTitle: 'Clean workspace', taskItemIsCompleted: false),
+          TaskItem(
+            taskItemTitle: 'Clean workspace',
+            taskItemIsCompleted: false,
+          ),
           TaskItem(taskItemTitle: 'Organize files', taskItemIsCompleted: true),
           TaskItem(taskItemTitle: 'Backup phone', taskItemIsCompleted: false),
         ],
         taskListLabel: TaskListLabel.other,
       ),
     ];
-    final f =await repository.getAllTaskLists(false);
-    if(f.isEmpty){
+    final f = await repository.getAllTaskLists(false);
+    if (f.isEmpty) {
       await repository.saveAllTaskLists(sampleTaskLists);
     }
-
   }
 
   @override
@@ -176,22 +196,24 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
       create: (context) => OnBoardingBloc()..add(OnBoardingIsFirstLaunch()),
       child: BlocBuilder<OnBoardingBloc, OnBoardingState>(
         builder: (context, state) {
-          if(state is OnBoardingInitial){
+          if (state is OnBoardingInitial) {
             return const SizedBox.shrink();
-          }else if(state is  OnBoardingNotShow){
-              return const HomeScreen();
-          }else if(state is OnBoardingShow){
+          } else if (state is OnBoardingNotShow) {
+            return const HomeScreen();
+          } else if (state is OnBoardingShow) {
             return Scaffold(
               backgroundColor: Colors.black,
               floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerFloat,
+                  FloatingActionButtonLocation.centerFloat,
               floatingActionButton: FloatingActionButton.extended(
                 backgroundColor: Colors.white,
                 shape: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(100),
                 ),
                 onPressed: () {
-                  context.read<OnBoardingBloc>().add(OnBoardingCompleteButtonClicked());
+                  context.read<OnBoardingBloc>().add(
+                    OnBoardingCompleteButtonClicked(),
+                  );
                 },
                 label: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 88),
@@ -217,10 +239,10 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                       'Dooit',
                       style: Theme.of(context).textTheme.headlineSmall!
                           .copyWith(
-                        fontWeight: FontWeight.w500,
-                        color: Colors.white,
-                        fontSize: 40,
-                      ),
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white,
+                            fontSize: 40,
+                          ),
                     ),
                     const SizedBox(height: 28),
                     Text(
@@ -236,7 +258,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                 ),
               ),
             );
-          }else {
+          } else {
             return const SizedBox.shrink();
           }
         },
@@ -244,4 +266,3 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
     );
   }
 }
-

@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:to_do_list/common/exception.dart';
 
-
-class AppErrorWidget extends StatelessWidget{
+class AppErrorWidget extends StatelessWidget {
   final AppException exception;
   final VoidCallback onPressed;
-  const AppErrorWidget({super.key, required this.exception, required this.onPressed});
+
+  const AppErrorWidget({
+    super.key,
+    required this.exception,
+    required this.onPressed,
+  });
 
   @override
   Widget build(BuildContext context) {

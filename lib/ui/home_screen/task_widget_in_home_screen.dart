@@ -20,9 +20,8 @@ class TaskWidgetInHomeScreen extends StatefulWidget {
 
 class _TaskWidgetInHomeScreenState extends State<TaskWidgetInHomeScreen>
     with TickerProviderStateMixin {
-
-
   late final AnimationController animationController;
+
   @override
   void initState() {
     super.initState();
@@ -31,8 +30,7 @@ class _TaskWidgetInHomeScreenState extends State<TaskWidgetInHomeScreen>
       duration: const Duration(milliseconds: 300),
     );
 
-    animationController.value =
-    widget.taskList.taskListIsExpanded ? 1.0 : 0.0;
+    animationController.value = widget.taskList.taskListIsExpanded ? 1.0 : 0.0;
   }
 
   @override
@@ -57,12 +55,12 @@ class _TaskWidgetInHomeScreenState extends State<TaskWidgetInHomeScreen>
 
   @override
   Widget build(BuildContext context) {
-
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (_) => AddEditListScreen(taskListID: widget.taskList.taskListID,),
+            builder: (_) =>
+                AddEditListScreen(taskListID: widget.taskList.taskListID),
           ),
         );
       },
@@ -83,7 +81,10 @@ class _TaskWidgetInHomeScreenState extends State<TaskWidgetInHomeScreen>
               children: [
                 Text(
                   widget.taskList.taskListTitle,
-                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 SizeTransition(
                   sizeFactor: animationController,
@@ -142,7 +143,10 @@ class _TaskWidgetInHomeScreenState extends State<TaskWidgetInHomeScreen>
                             .toString()
                             .split('.')
                             .last,
-                        style: const TextStyle(fontSize: 8, color: Colors.white),
+                        style: const TextStyle(
+                          fontSize: 8,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ],

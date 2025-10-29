@@ -33,11 +33,11 @@ extension HiveToTaskList on TaskListHiveModule {
       taskListItems: taskListItems
           .map(
             (taskItem) => TaskItem(
-          taskItemTitle: taskItem.taskItemTitle,
-          taskItemIsCompleted: taskItem.taskItemIsCompleted,
-          taskItemID: taskItem.taskItemID,
-        ),
-      )
+              taskItemTitle: taskItem.taskItemTitle,
+              taskItemIsCompleted: taskItem.taskItemIsCompleted,
+              taskItemID: taskItem.taskItemID,
+            ),
+          )
           .toList(),
       taskListLabel: taskListLabel,
       taskListID: taskListID,

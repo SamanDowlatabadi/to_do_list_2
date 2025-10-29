@@ -15,13 +15,10 @@ class HomeScreenSuccess extends HomeScreenState {
   final List<TaskList> taskLists;
   final bool isPinned;
 
-  HomeScreenSuccess({
-    required this.taskLists,
-    required this.isPinned,
-  });
+  HomeScreenSuccess({required this.taskLists, required this.isPinned});
 }
 
-class HomeScreenEmptyState extends HomeScreenState{
+class HomeScreenEmptyState extends HomeScreenState {
   final bool isPinned;
 
   HomeScreenEmptyState({required this.isPinned});

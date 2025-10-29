@@ -4,15 +4,16 @@ import 'package:to_do_list/data/source/task_list_data_source/task_list_hive_data
 import 'package:to_do_list/data/task_item_module.dart';
 import 'package:to_do_list/data/task_list_module.dart';
 
-final taskListRepository = TaskListRepository(taskListDataSource: TaskListHiveDataSource());
+final taskListRepository = TaskListRepository(
+  taskListDataSource: TaskListHiveDataSource(),
+);
 
-class TaskListNotifier extends ChangeNotifier{
+class TaskListNotifier extends ChangeNotifier {
   void notifyChanged() => notifyListeners();
 }
 
-
 abstract class ITaskListRepository {
- static final TaskListNotifier taskListNotifier = TaskListNotifier();
+  static final TaskListNotifier taskListNotifier = TaskListNotifier();
 
   Future<List<TaskList>> getAllTaskLists(bool isPinned);
 

@@ -34,9 +34,9 @@ class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
             isPinned = false;
           }
           final taskLists = await taskListRepository.getAllTaskLists(isPinned);
-          if(taskLists.isEmpty){
+          if (taskLists.isEmpty) {
             emit(HomeScreenEmptyState(isPinned: isPinned));
-          }else{
+          } else {
             emit(HomeScreenSuccess(taskLists: taskLists, isPinned: isPinned));
           }
         } catch (e) {

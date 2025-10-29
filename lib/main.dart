@@ -7,7 +7,6 @@ import 'package:to_do_list/data/source/task_list_data_source/task_list_hive_data
 import 'package:to_do_list/data/task_list_label.dart';
 import 'package:to_do_list/ui/on_boarding/on_boarding.dart';
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
@@ -15,7 +14,6 @@ void main() async {
   Hive.registerAdapter(TaskItemHiveModuleAdapter());
   Hive.registerAdapter(TaskListLabelAdapter());
   await Hive.openBox<TaskListHiveModule>(TaskListHiveDataSource.boxName);
-
 
   runApp(
     DevicePreview(

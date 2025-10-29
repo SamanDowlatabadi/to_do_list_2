@@ -22,12 +22,12 @@ class TaskList {
     required this.taskListIsExpanded,
     int? taskListBackgroundColor,
     String? taskListID,
-  })  {
-  final id = taskListID ?? const Uuid().v4();
-  this.taskListID = id;
-  this.taskListBackgroundColor = taskListBackgroundColor ?? getColorFromID(id);
-}
-
+  }) {
+    final id = taskListID ?? const Uuid().v4();
+    this.taskListID = id;
+    this.taskListBackgroundColor =
+        taskListBackgroundColor ?? getColorFromID(id);
+  }
 
   Map<String, dynamic> toJson() {
     return {
@@ -35,8 +35,8 @@ class TaskList {
       'taskListID': taskListID,
       'taskListPinned': taskListPinned,
       'taskListItems': taskListItems.map((e) => e.toJson()).toList(),
-      'taskListLabel' : taskListLabel.toJson(),
-    'taskListIsExpanded' : taskListIsExpanded,
+      'taskListLabel': taskListLabel.toJson(),
+      'taskListIsExpanded': taskListIsExpanded,
     };
   }
 
@@ -47,13 +47,16 @@ class TaskList {
     taskListID: json['taskListID'],
     taskListItems: (json['taskListItems'] as List)
         .map((e) => TaskItem.fromJson(e))
-        .toList(), taskListIsExpanded: json['taskListIsExpanded'],
+        .toList(),
+    taskListIsExpanded: json['taskListIsExpanded'],
   );
 }
 
-
 int getColorFromID(String taskListID) {
-  int stableHash = taskListID.codeUnits.fold(0, (prev, elem) => prev + elem * 37);
+  int stableHash = taskListID.codeUnits.fold(
+    0,
+    (prev, elem) => prev + elem * 37,
+  );
 
   final random = Random(stableHash);
   final red = 50 + random.nextInt(100);

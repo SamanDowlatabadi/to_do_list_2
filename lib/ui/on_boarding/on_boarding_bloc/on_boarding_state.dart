@@ -12,5 +12,4 @@ class OnBoardingShow extends OnBoardingState {}
 
 class OnBoardingNotShow extends OnBoardingState {
   OnBoardingNotShow();
-
 }

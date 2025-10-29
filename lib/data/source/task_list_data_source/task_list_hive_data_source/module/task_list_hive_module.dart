@@ -5,6 +5,7 @@ import 'package:to_do_list/data/task_list_label.dart';
 import 'package:to_do_list/data/task_list_module.dart';
 
 part 'task_list_hive_module.g.dart';
+
 @HiveType(typeId: 1)
 class TaskListHiveModule extends HiveObject {
   @HiveField(0)
@@ -36,7 +37,7 @@ class TaskListHiveModule extends HiveObject {
     required this.taskListIsExpanded,
     required this.taskListBackgroundColor,
     required this.taskListID,
-  }) ;
+  });
 
   TaskList taskListFromHiveModule(TaskListHiveModule hiveModule) {
     return TaskList(
@@ -78,4 +79,3 @@ class TaskListHiveModule extends HiveObject {
     );
   }
 }
-

@@ -1,16 +1,10 @@
-
 import 'package:to_do_list/data/repository/task_list_repository/i_task_list_repository.dart';
 import 'package:to_do_list/data/source/task_list_data_source/i_task_list_data_source.dart';
 import 'package:to_do_list/data/task_item_module.dart';
 import 'package:to_do_list/data/task_list_module.dart';
 
-
-
-
 class TaskListRepository implements ITaskListRepository {
   final ITaskListDataSource taskListDataSource;
-
-
 
   TaskListRepository({required this.taskListDataSource});
 
@@ -61,11 +55,13 @@ class TaskListRepository implements ITaskListRepository {
     String taskItemID,
   ) async {
     await taskListDataSource.toggleTaskCompletion(taskListID, taskItemID);
+    ITaskListRepository.taskListNotifier.notifyChanged();
   }
 
   @override
   Future<void> updateTaskItem(String taskListID, TaskItem taskItem) async {
     await taskListDataSource.updateTaskItem(taskListID, taskItem);
+
   }
 
   @override
