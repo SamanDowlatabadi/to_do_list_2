@@ -22,8 +22,8 @@ class TaskListHiveModuleAdapter extends TypeAdapter<TaskListHiveModule> {
       taskListItems: (fields[3] as List).cast<TaskItemHiveModule>(),
       taskListLabel: fields[4] as TaskListLabel,
       taskListIsExpanded: fields[6] as bool,
-      taskListBackgroundColor: fields[5] as int?,
-      taskListID: fields[1] as String?,
+      taskListBackgroundColor: fields[5] as int,
+      taskListID: fields[1] as String,
     );
   }
 

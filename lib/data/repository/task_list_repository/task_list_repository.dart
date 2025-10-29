@@ -1,19 +1,26 @@
+
 import 'package:to_do_list/data/repository/task_list_repository/i_task_list_repository.dart';
 import 'package:to_do_list/data/source/task_list_data_source/i_task_list_data_source.dart';
 import 'package:to_do_list/data/task_item_module.dart';
 import 'package:to_do_list/data/task_list_module.dart';
 
+
+
+
 class TaskListRepository implements ITaskListRepository {
   final ITaskListDataSource taskListDataSource;
+
+
 
   TaskListRepository({required this.taskListDataSource});
 
   @override
   Future<void> addTaskItemToTaskList(
-      String taskListID,
-      TaskItem taskItem,
-      ) async {
+    String taskListID,
+    TaskItem taskItem,
+  ) async {
     await taskListDataSource.addTaskItemToTaskList(taskListID, taskItem);
+    ITaskListRepository.taskListNotifier.notifyChanged();
   }
 
   @override
@@ -33,7 +40,8 @@ class TaskListRepository implements ITaskListRepository {
 
   @override
   Future<List<TaskList>> getAllTaskLists(bool isPinned) async {
-    return await taskListDataSource.getAllTaskLists(isPinned);
+    final taskLists = await taskListDataSource.getAllTaskLists(isPinned);
+    return taskLists;
   }
 
   @override
@@ -42,15 +50,16 @@ class TaskListRepository implements ITaskListRepository {
   }
 
   @override
-  Future<void> togglePinTaskList(String taskListID, bool isPinned) async {
-    await taskListDataSource.togglePinTaskList(taskListID, isPinned);
+  Future<void> togglePinTaskList(String taskListID) async {
+    await taskListDataSource.togglePinTaskList(taskListID);
+    ITaskListRepository.taskListNotifier.notifyChanged();
   }
 
   @override
   Future<void> toggleTaskCompletion(
-      String taskListID,
-      String taskItemID,
-      ) async {
+    String taskListID,
+    String taskItemID,
+  ) async {
     await taskListDataSource.toggleTaskCompletion(taskListID, taskItemID);
   }
 
@@ -65,7 +74,12 @@ class TaskListRepository implements ITaskListRepository {
   }
 
   @override
-  Future<void> toggleTaskListExpansion(String taskListID) async{
+  Future<void> toggleTaskListExpansion(String taskListID) async {
     await taskListDataSource.toggleTaskListExpansion(taskListID);
+  }
+
+  @override
+  Future<TaskList> getTaskList(String taskListID) async {
+    return await taskListDataSource.getTaskList(taskListID);
   }
 }

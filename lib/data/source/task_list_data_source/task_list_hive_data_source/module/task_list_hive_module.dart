@@ -1,12 +1,8 @@
-import 'dart:math';
-import 'dart:ui';
-
 import 'package:hive/hive.dart';
 import 'package:to_do_list/data/source/task_list_data_source/task_list_hive_data_source/module/task_item_hive_module.dart';
 import 'package:to_do_list/data/task_item_module.dart';
 import 'package:to_do_list/data/task_list_label.dart';
 import 'package:to_do_list/data/task_list_module.dart';
-import 'package:uuid/uuid.dart';
 
 part 'task_list_hive_module.g.dart';
 @HiveType(typeId: 1)
@@ -38,10 +34,9 @@ class TaskListHiveModule extends HiveObject {
     required this.taskListItems,
     required this.taskListLabel,
     required this.taskListIsExpanded,
-    int? taskListBackgroundColor,
-    String? taskListID,
-  }) : taskListID = taskListID ?? Uuid().v4(),
-       taskListBackgroundColor = getColorFromID(taskListID ?? Uuid().v4());
+    required this.taskListBackgroundColor,
+    required this.taskListID,
+  }) ;
 
   TaskList taskListFromHiveModule(TaskListHiveModule hiveModule) {
     return TaskList(
@@ -84,12 +79,3 @@ class TaskListHiveModule extends HiveObject {
   }
 }
 
-int getColorFromID(String taskListID) {
-  final hash = taskListID.hashCode;
-  final random = Random(hash);
-  final red = 50 + random.nextInt(100);
-  final green = 150 + random.nextInt(106);
-  final blue = 150 + random.nextInt(106);
-
-  return Color.fromARGB(100, red, green, blue).toARGB32();
-}

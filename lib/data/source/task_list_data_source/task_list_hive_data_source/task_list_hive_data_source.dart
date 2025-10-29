@@ -106,7 +106,7 @@ class TaskListHiveDataSource implements ITaskListDataSource {
   }
 
   @override
-  Future<void> togglePinTaskList(String taskListID, bool isPinned) async {
+  Future<void> togglePinTaskList(String taskListID) async {
     try {
       final box = Hive.box<TaskListHiveModule>(boxName);
       final taskListHiveModule = box.get(taskListID);
@@ -114,7 +114,7 @@ class TaskListHiveDataSource implements ITaskListDataSource {
         throw Exception('Task List not found');
       }
 
-      taskListHiveModule.taskListPinned = isPinned;
+      taskListHiveModule.taskListPinned = !taskListHiveModule.taskListPinned;
       await box.put(taskListID, taskListHiveModule);
     } catch (e) {
       throw Exception(e.toString());
@@ -196,6 +196,20 @@ class TaskListHiveDataSource implements ITaskListDataSource {
         throw Exception('Task List not found');
       }
       await box.put(updatedTaskList.taskListID, updatedTaskList.toHive());
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  @override
+  Future<TaskList> getTaskList(String taskListID) async{
+    try {
+      final box = Hive.box<TaskListHiveModule>(boxName);
+      final taskListHiveModule = box.get(taskListID);
+      if (taskListHiveModule == null) {
+        throw Exception('Task List not found');
+      }
+      return taskListHiveModule.toTaskList();
     } catch (e) {
       throw Exception(e.toString());
     }

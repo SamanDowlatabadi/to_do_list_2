@@ -6,9 +6,9 @@ sealed class HomeScreenState {}
 class HomeScreenLoading extends HomeScreenState {}
 
 class HomeScreenError extends HomeScreenState {
-  final AppException exception;
+  final AppException appException;
 
-  HomeScreenError({required this.exception});
+  HomeScreenError({required this.appException});
 }
 
 class HomeScreenSuccess extends HomeScreenState {
@@ -19,4 +19,10 @@ class HomeScreenSuccess extends HomeScreenState {
     required this.taskLists,
     required this.isPinned,
   });
+}
+
+class HomeScreenEmptyState extends HomeScreenState{
+  final bool isPinned;
+
+  HomeScreenEmptyState({required this.isPinned});
 }

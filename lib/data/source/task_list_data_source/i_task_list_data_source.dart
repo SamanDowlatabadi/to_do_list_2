@@ -4,6 +4,8 @@ import 'package:to_do_list/data/task_list_module.dart';
 abstract class ITaskListDataSource {
   Future<List<TaskList>> getAllTaskLists(bool isPinned);
 
+  Future<TaskList> getTaskList(String taskListID);
+
   Future<void> saveAllTaskLists(List<TaskList> taskLists);
 
   Future<void> addTaskList(TaskList taskList);
@@ -12,7 +14,7 @@ abstract class ITaskListDataSource {
 
   Future<void> updateTaskList(TaskList updatedTaskList);
 
-  Future<void> togglePinTaskList(String taskListID, bool isPinned);
+  Future<void> togglePinTaskList(String taskListID);
 
   Future<void> addTaskItemToTaskList(String taskListID, TaskItem taskItem);
 

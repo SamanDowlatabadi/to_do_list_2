@@ -9,7 +9,7 @@ class TaskItem {
     required this.taskItemTitle,
     required this.taskItemIsCompleted,
     String? taskItemID,
-  }) : taskItemID = taskItemID ?? Uuid().v4();
+  }) : taskItemID = taskItemID ?? const Uuid().v4();
 
   Map<String, dynamic> toJson() {
     return {

@@ -7,11 +7,11 @@ import 'package:uuid/uuid.dart';
 
 class TaskList {
   String taskListTitle;
-  String taskListID;
+  late String taskListID;
   bool taskListPinned;
   List<TaskItem> taskListItems;
   TaskListLabel taskListLabel;
-  int taskListBackgroundColor;
+  late int taskListBackgroundColor;
   bool taskListIsExpanded;
 
   TaskList({
@@ -22,9 +22,12 @@ class TaskList {
     required this.taskListIsExpanded,
     int? taskListBackgroundColor,
     String? taskListID,
-  }) : taskListID = taskListID ?? Uuid().v4(),
-       taskListBackgroundColor = getColorFromID(taskListID ?? Uuid().v4())
-  ;
+  })  {
+  final id = taskListID ?? const Uuid().v4();
+  this.taskListID = id;
+  this.taskListBackgroundColor = taskListBackgroundColor ?? getColorFromID(id);
+}
+
 
   Map<String, dynamic> toJson() {
     return {
@@ -50,8 +53,9 @@ class TaskList {
 
 
 int getColorFromID(String taskListID) {
-  final hash = taskListID.hashCode;
-  final random = Random(hash);
+  int stableHash = taskListID.codeUnits.fold(0, (prev, elem) => prev + elem * 37);
+
+  final random = Random(stableHash);
   final red = 50 + random.nextInt(100);
   final green = 150 + random.nextInt(106);
   final blue = 150 + random.nextInt(106);
