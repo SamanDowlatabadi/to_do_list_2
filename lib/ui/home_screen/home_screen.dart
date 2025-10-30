@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:to_do_list/data/repository/task_list_repository/i_task_list_repository.dart';
+import 'package:to_do_list/data/task_list_module.dart';
+import 'package:to_do_list/ui/add_edit_list_screen/add_edit_list_screen.dart';
 import 'package:to_do_list/ui/common/app_error_widget.dart';
 import 'package:to_do_list/ui/common/utils.dart';
 import 'package:to_do_list/ui/home_screen/empty_state_home.dart';
@@ -59,7 +61,17 @@ class HomeScreen extends StatelessWidget {
                   backgroundColor: Colors.black,
                   foregroundColor: Colors.white,
                   shape: const CircleBorder(),
-                  onPressed: () {},
+                  onPressed: () {
+                    final sample = sampleTaskList();
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => AddEditListScreen(
+                          taskListID: sample.taskListID,
+                          isNewTaskList: true,
+                        ),
+                      ),
+                    );
+                  },
                   child: const Icon(CupertinoIcons.plus, size: 30, grade: 10),
                 ),
               ),
@@ -119,6 +131,14 @@ class HomeScreen extends StatelessWidget {
                         return TaskWidgetInHomeScreen(
                           taskList: taskList,
                           key: ValueKey(taskList.taskListID),
+                          deleteTaskList: ()
+                            =>
+                                context.read<HomeScreenBloc>().add(
+                                  HomeScreenDeleteTaskList(
+                                    taskListID: taskList.taskListID,
+                                  ),
+                                ),
+
                           toggleTaskListExpansion: () =>
                               context.read<HomeScreenBloc>().add(
                                 HomeScreenToggleTaskListExpanded(
@@ -208,7 +228,17 @@ class HomeScreen extends StatelessWidget {
                   const SizedBox(height: 50),
                   Expanded(
                     child: EmptyStateWidget(
-                      newListFunc: () {},
+                      newListFunc: () {
+                        final sample = sampleTaskList();
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => AddEditListScreen(
+                              taskListID: sample.taskListID,
+                              isNewTaskList: true,
+                            ),
+                          ),
+                        );
+                      },
                       isPinned: state.isPinned,
                     ),
                   ),

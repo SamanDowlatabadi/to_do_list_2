@@ -26,3 +26,13 @@ class HomeScreenToggleTaskListExpanded extends HomeScreenEvent {
 
   HomeScreenToggleTaskListExpanded({required this.taskListID});
 }
+
+class HomeScreenAddTaskList extends HomeScreenEvent{
+
+}
+
+class HomeScreenDeleteTaskList extends HomeScreenEvent{
+  final String taskListID;
+
+  HomeScreenDeleteTaskList({required this.taskListID});
+}

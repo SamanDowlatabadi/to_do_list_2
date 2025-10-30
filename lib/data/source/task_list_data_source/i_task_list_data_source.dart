@@ -6,9 +6,11 @@ abstract class ITaskListDataSource {
 
   Future<TaskList> getTaskList(String taskListID);
 
+  Future<TaskItem> getTaskItem(String taskListID, String taskItemID);
+
   Future<void> saveAllTaskLists(List<TaskList> taskLists);
 
-  Future<void> addTaskList(TaskList taskList);
+  Future<void> addTaskList(String taskListID);
 
   Future<void> deleteTaskList(String taskListID);
 
@@ -16,7 +18,7 @@ abstract class ITaskListDataSource {
 
   Future<void> togglePinTaskList(String taskListID);
 
-  Future<void> addTaskItemToTaskList(String taskListID, TaskItem taskItem);
+  Future<void> addTaskItemToTaskList(String taskListID, String taskItemTitle);
 
   Future<void> updateTaskItem(String taskListID, TaskItem taskItem);
 
@@ -25,4 +27,8 @@ abstract class ITaskListDataSource {
   Future<void> toggleTaskCompletion(String taskListID, String taskItemID);
 
   Future<void> toggleTaskListExpansion(String taskListID);
+
+  Future<void> editTaskItemTitle(String taskListID, String taskItemID, String taskItemNewTitle);
+
+  Future<void> editTaskListTitle(String taskListID, String taskListNewTitle);
 }

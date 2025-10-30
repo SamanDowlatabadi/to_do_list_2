@@ -93,7 +93,17 @@ class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
             ),
           );
         }
-      } else {
+      } else if(event is HomeScreenDeleteTaskList){
+        try{
+          await taskListRepository.deleteTaskList(event.taskListID);
+         }catch (e) {
+          emit(
+            HomeScreenError(
+              appException: e is AppException ? e : AppException(),
+            ),
+          );
+        }
+      }else {
         throw Exception('Event is unsupported');
       }
     });

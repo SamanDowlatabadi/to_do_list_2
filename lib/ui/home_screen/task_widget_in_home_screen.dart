@@ -5,13 +5,14 @@ import 'package:to_do_list/ui/add_edit_list_screen/add_edit_list_screen.dart';
 class TaskWidgetInHomeScreen extends StatefulWidget {
   final TaskList taskList;
   final VoidCallback toggleTaskListExpansion;
+  final VoidCallback deleteTaskList;
   final Function(String) toggleTaskItemCompletion;
 
   const TaskWidgetInHomeScreen({
     super.key,
     required this.taskList,
     required this.toggleTaskItemCompletion,
-    required this.toggleTaskListExpansion,
+    required this.toggleTaskListExpansion, required this.deleteTaskList,
   });
 
   @override
@@ -79,12 +80,18 @@ class _TaskWidgetInHomeScreenState extends State<TaskWidgetInHomeScreen>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  widget.taskList.taskListTitle,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                  ),
+                Row(
+                  children: [
+                    Text(
+                      widget.taskList.taskListTitle,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const Spacer(),
+                    IconButton(onPressed: widget.deleteTaskList, icon: const Icon(Icons.delete))
+                  ],
                 ),
                 SizeTransition(
                   sizeFactor: animationController,

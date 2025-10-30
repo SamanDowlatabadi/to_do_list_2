@@ -2,6 +2,7 @@ import 'package:hive/hive.dart';
 import 'package:to_do_list/data/source/task_list_data_source/i_task_list_data_source.dart';
 import 'package:to_do_list/data/source/task_list_data_source/task_list_hive_data_source/module/task_list_hive_module.dart';
 import 'package:to_do_list/data/task_item_module.dart';
+import 'package:to_do_list/data/task_list_label.dart';
 import 'package:to_do_list/data/task_list_module.dart';
 import 'mapper/task_item_mapper.dart';
 import 'mapper/task_list_mapper.dart';
@@ -28,31 +29,44 @@ class TaskListHiveDataSource implements ITaskListDataSource {
   }
 
   @override
-  Future<void> addTaskItemToTaskList(
-    String taskListID,
-    TaskItem taskItem,
-  ) async {
+  Future<void> addTaskItemToTaskList(String taskListID,
+      String taskItemTitle,) async {
     try {
       final box = Hive.box<TaskListHiveModule>(boxName);
       final taskListHiveModule = box.get(taskListID);
       if (taskListHiveModule == null) {
         throw Exception('Task List not found');
       }
-      final taskItemHiveModule = taskItem.toHive();
-
-      taskListHiveModule.taskListItems.add(taskItemHiveModule);
-      await box.put(taskListID, taskListHiveModule);
+      final isDuplicate = taskListHiveModule.taskListItems.any(
+            (taskItem) =>
+        taskItem.taskItemTitle.trim().toLowerCase() ==
+            taskItemTitle.toLowerCase(),
+      );
+      final taskItemHiveModule = TaskItem(
+        taskItemTitle: taskItemTitle,
+        taskItemIsCompleted: false,
+      ).toHive();
+      if (!isDuplicate) {
+        taskListHiveModule.taskListItems.add(taskItemHiveModule);
+        await box.put(taskListID, taskListHiveModule);
+      }
     } catch (e) {
       throw Exception(e.toString());
     }
   }
 
   @override
-  Future<void> addTaskList(TaskList taskList) async {
+  Future<void> addTaskList(String taskListID) async {
     try {
       final box = Hive.box<TaskListHiveModule>(boxName);
+      final TaskList taskList = TaskList(taskListTitle: 'Title',
+          taskListID: taskListID,
+          taskListPinned: false,
+          taskListItems: [],
+          taskListLabel: TaskListLabel.personal,
+          taskListIsExpanded: false);
       final taskListHiveModule = taskList.toHive();
-      await box.put(taskList.taskListID, taskListHiveModule);
+      await box.put(taskListHiveModule.taskListID, taskListHiveModule);
     } catch (e) {
       throw Exception(e.toString());
     }
@@ -122,10 +136,8 @@ class TaskListHiveDataSource implements ITaskListDataSource {
   }
 
   @override
-  Future<void> toggleTaskCompletion(
-    String taskListID,
-    String taskItemID,
-  ) async {
+  Future<void> toggleTaskCompletion(String taskListID,
+      String taskItemID,) async {
     try {
       final box = Hive.box<TaskListHiveModule>(boxName);
       final taskListHiveModule = box.get(taskListID);
@@ -133,16 +145,16 @@ class TaskListHiveDataSource implements ITaskListDataSource {
         throw Exception('Task List not found');
       }
       final indexOfTaskItem = taskListHiveModule.taskListItems.indexWhere(
-        (taskItem) => taskItem.taskItemID == taskItemID,
+            (taskItem) => taskItem.taskItemID == taskItemID,
       );
       if (indexOfTaskItem == -1) {
         throw Exception('Task Item not found');
       }
       final taskItemHiveModule =
-          taskListHiveModule.taskListItems[indexOfTaskItem];
+      taskListHiveModule.taskListItems[indexOfTaskItem];
 
       taskItemHiveModule.taskItemIsCompleted =
-          !taskItemHiveModule.taskItemIsCompleted;
+      !taskItemHiveModule.taskItemIsCompleted;
       await box.put(taskListID, taskListHiveModule);
     } catch (e) {
       throw Exception(e.toString());
@@ -158,7 +170,7 @@ class TaskListHiveDataSource implements ITaskListDataSource {
         throw Exception('Task List not found');
       }
       taskListHiveModule.taskListIsExpanded =
-          !taskListHiveModule.taskListIsExpanded;
+      !taskListHiveModule.taskListIsExpanded;
       await box.put(taskListID, taskListHiveModule);
     } catch (e) {
       throw Exception(e.toString());
@@ -174,7 +186,7 @@ class TaskListHiveDataSource implements ITaskListDataSource {
         throw Exception('Task List not found');
       }
       final indexOfTaskItem = taskListHiveModule.taskListItems.indexWhere(
-        (tempTaskItem) => tempTaskItem.taskItemID == taskItem.taskItemID,
+            (tempTaskItem) => tempTaskItem.taskItemID == taskItem.taskItemID,
       );
       if (indexOfTaskItem == -1) {
         throw Exception('Task Item not found');
@@ -210,6 +222,69 @@ class TaskListHiveDataSource implements ITaskListDataSource {
         throw Exception('Task List not found');
       }
       return taskListHiveModule.toTaskList();
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  @override
+  Future<TaskItem> getTaskItem(String taskListID, String taskItemID) async {
+    try {
+      final box = Hive.box<TaskListHiveModule>(boxName);
+      final taskListHiveModule = box.get(taskListID);
+      if (taskListHiveModule == null) {
+        throw Exception('Task List not found');
+      }
+      final indexOfTaskItem = taskListHiveModule.taskListItems.indexWhere(
+            (tempTaskItem) => tempTaskItem.taskItemID == taskItemID,
+      );
+      if (indexOfTaskItem == -1) {
+        throw Exception('Task Item not found');
+      }
+      return taskListHiveModule.taskListItems[indexOfTaskItem].toTaskItem();
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  @override
+  Future<void> editTaskItemTitle(String taskListID,
+      String taskItemID,
+      String taskItemNewTitle,) async {
+    try {
+      final box = Hive.box<TaskListHiveModule>(boxName);
+      final taskListHiveModule = box.get(taskListID);
+      if (taskListHiveModule == null) {
+        throw Exception('Task List not found');
+      }
+      final indexOfTaskItem = taskListHiveModule.taskListItems.indexWhere(
+            (taskItem) => taskItem.taskItemID == taskItemID,
+      );
+      if (indexOfTaskItem == -1) {
+        throw Exception('Task Item not found');
+      }
+      final taskItemHiveModule =
+      taskListHiveModule.taskListItems[indexOfTaskItem];
+
+      taskItemHiveModule.taskItemTitle = taskItemNewTitle;
+      await box.put(taskListID, taskListHiveModule);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  @override
+  Future<void> editTaskListTitle(String taskListID,
+      String taskListNewTitle,) async {
+    try {
+      final box = Hive.box<TaskListHiveModule>(boxName);
+      final taskListHiveModule = box.get(taskListID);
+      if (taskListHiveModule == null) {
+        throw Exception('Task List not found');
+      }
+
+      taskListHiveModule.taskListTitle = taskListNewTitle;
+      await box.put(taskListID, taskListHiveModule);
     } catch (e) {
       throw Exception(e.toString());
     }

@@ -7,8 +7,10 @@ class AddEditListScreenLoading extends AddEditListScreenState {}
 
 class AddEditListScreenSuccess extends AddEditListScreenState {
   final TaskList taskList;
-
-  AddEditListScreenSuccess({required this.taskList});
+  final String? editingID;
+  final String? editingTitle;
+  final bool isAddingTask;
+  AddEditListScreenSuccess( {required this.taskList,  this.editingID ,  this.editingTitle , this.isAddingTask = false});
 }
 
 class AddEditListScreenError extends AddEditListScreenState {
