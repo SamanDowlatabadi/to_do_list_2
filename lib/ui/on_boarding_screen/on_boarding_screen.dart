@@ -6,7 +6,7 @@ import 'package:to_do_list/data/task_item_module.dart';
 import 'package:to_do_list/data/task_list_label.dart';
 import 'package:to_do_list/data/task_list_module.dart';
 import 'package:to_do_list/ui/home_screen/home_screen.dart';
-import 'package:to_do_list/ui/on_boarding/on_boarding_bloc/on_boarding_bloc.dart';
+import 'package:to_do_list/ui/on_boarding_screen/on_boarding_screen_bloc/on_boarding_screen_bloc.dart';
 
 class OnBoardingScreen extends StatefulWidget {
   const OnBoardingScreen({super.key});
@@ -19,9 +19,10 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
   @override
   void initState() {
     super.initState();
-    _initializeSampleData();
+    //_initializeSampleData();
   }
 
+  // ignore: unused_element
   Future<void> _initializeSampleData() async {
     final repository = TaskListRepository(
       taskListDataSource: TaskListHiveDataSource(),
@@ -75,132 +76,25 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
         ],
         taskListLabel: TaskListLabel.work,
       ),
-      TaskList(
-        taskListTitle: 'Shopping List',
-        taskListIsExpanded: false,
-        taskListPinned: false,
-        taskListItems: [
-          TaskItem(taskItemTitle: 'Milk', taskItemIsCompleted: true),
-          TaskItem(taskItemTitle: 'Eggs', taskItemIsCompleted: false),
-          TaskItem(taskItemTitle: 'Bread', taskItemIsCompleted: false),
-          TaskItem(taskItemTitle: 'Fruits', taskItemIsCompleted: true),
-        ],
-        taskListLabel: TaskListLabel.other,
-      ),
-      TaskList(
-        taskListTitle: 'University',
-        taskListIsExpanded: false,
-        taskListPinned: false,
-        taskListItems: [
-          TaskItem(
-            taskItemTitle: 'Submit assignment',
-            taskItemIsCompleted: false,
-          ),
-          TaskItem(
-            taskItemTitle: 'Prepare for exam',
-            taskItemIsCompleted: false,
-          ),
-          TaskItem(
-            taskItemTitle: 'Check project group chat',
-            taskItemIsCompleted: true,
-          ),
-        ],
-        taskListLabel: TaskListLabel.personal,
-      ),
-      TaskList(
-        taskListTitle: 'Fitness Goals',
-        taskListIsExpanded: false,
-        taskListPinned: false,
-        taskListItems: [
-          TaskItem(taskItemTitle: 'Run 5km', taskItemIsCompleted: false),
-          TaskItem(
-            taskItemTitle: 'Drink 2L of water',
-            taskItemIsCompleted: true,
-          ),
-          TaskItem(taskItemTitle: 'Track calories', taskItemIsCompleted: false),
-        ],
-        taskListLabel: TaskListLabel.personal,
-      ),
-      TaskList(
-        taskListTitle: 'Finance',
-        taskListIsExpanded: false,
-        taskListPinned: false,
-        taskListItems: [
-          TaskItem(taskItemTitle: 'Pay bills', taskItemIsCompleted: false),
-          TaskItem(
-            taskItemTitle: 'Update budget sheet',
-            taskItemIsCompleted: true,
-          ),
-          TaskItem(
-            taskItemTitle: 'Check investments',
-            taskItemIsCompleted: false,
-          ),
-        ],
-        taskListLabel: TaskListLabel.finance,
-      ),
-      TaskList(
-        taskListTitle: 'Travel Plans',
-        taskListIsExpanded: false,
-        taskListPinned: false,
-        taskListItems: [
-          TaskItem(taskItemTitle: 'Book hotel', taskItemIsCompleted: true),
-          TaskItem(
-            taskItemTitle: 'Buy flight tickets',
-            taskItemIsCompleted: true,
-          ),
-          TaskItem(taskItemTitle: 'Pack luggage', taskItemIsCompleted: false),
-        ],
-        taskListLabel: TaskListLabel.other,
-      ),
-      TaskList(
-        taskListTitle: 'Health',
-        taskListIsExpanded: false,
-        taskListPinned: false,
-        taskListItems: [
-          TaskItem(
-            taskItemTitle: 'Doctor appointment',
-            taskItemIsCompleted: false,
-          ),
-          TaskItem(taskItemTitle: 'Take vitamins', taskItemIsCompleted: true),
-          TaskItem(
-            taskItemTitle: 'Meditate 15 mins',
-            taskItemIsCompleted: false,
-          ),
-        ],
-        taskListLabel: TaskListLabel.personal,
-      ),
-      TaskList(
-        taskListTitle: 'Miscellaneous',
-        taskListIsExpanded: false,
-        taskListPinned: false,
-        taskListItems: [
-          TaskItem(
-            taskItemTitle: 'Clean workspace',
-            taskItemIsCompleted: false,
-          ),
-          TaskItem(taskItemTitle: 'Organize files', taskItemIsCompleted: true),
-          TaskItem(taskItemTitle: 'Backup phone', taskItemIsCompleted: false),
-        ],
-        taskListLabel: TaskListLabel.other,
-      ),
     ];
     final f = await repository.getAllTaskLists(false);
-    if (f.isEmpty) {
-      await repository.saveAllTaskLists(sampleTaskLists);
+    if(f.isEmpty){
+      sampleTaskLists.map((e) => repository.addTaskList(e.taskListID));
     }
+
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => OnBoardingBloc()..add(OnBoardingIsFirstLaunch()),
-      child: BlocBuilder<OnBoardingBloc, OnBoardingState>(
+      create: (context) => OnBoardingScreenBloc()..add(OnBoardingScreenIsFirstLaunch()),
+      child: BlocBuilder<OnBoardingScreenBloc, OnBoardingScreenState>(
         builder: (context, state) {
-          if (state is OnBoardingInitial) {
+          if (state is OnBoardingScreenInitial) {
             return const SizedBox.shrink();
-          } else if (state is OnBoardingNotShow) {
+          } else if (state is OnBoardingScreenNotShow) {
             return const HomeScreen();
-          } else if (state is OnBoardingShow) {
+          } else if (state is OnBoardingScreenShow) {
             return Scaffold(
               backgroundColor: Colors.black,
               floatingActionButtonLocation:
@@ -211,8 +105,8 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                   borderRadius: BorderRadius.circular(100),
                 ),
                 onPressed: () {
-                  context.read<OnBoardingBloc>().add(
-                    OnBoardingCompleteButtonClicked(),
+                  context.read<OnBoardingScreenBloc>().add(
+                    OnBoardingScreenCompleteButtonClicked(),
                   );
                 },
                 label: Padding(
@@ -231,7 +125,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Image.asset(
-                      'assets/images/on_boarding/on_boarding_img.png',
+                      'assets/images/on_boarding_screen/on_boarding_img.png',
                       height: 68,
                     ),
                     const SizedBox(height: 42),

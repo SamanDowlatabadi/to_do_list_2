@@ -17,96 +17,46 @@ class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
     : super(HomeScreenLoading()) {
     _onChangedRepository = () {
       add(HomeScreenRefresh());
-      debugPrint('Task Lists Changed');
     };
 
     ITaskListRepository.taskListNotifier.addListener(_onChangedRepository);
 
     on<HomeScreenEvent>((event, emit) async {
-      if (event is HomeScreenStarted || event is HomeScreenRefresh) {
-        try {
-          bool isPinned;
-          if (event is HomeScreenStarted) {
-            isPinned = event.isPinned;
-          } else if (event is HomeScreenRefresh && state is HomeScreenSuccess) {
-            isPinned = (state as HomeScreenSuccess).isPinned;
-          } else {
-            isPinned = false;
-          }
+      try {
+        // is Pinning checking
+        bool isPinned;
+        if (event is HomeScreenStarted) {
+          isPinned = event.isPinned;
+        } else if (event is HomeScreenRefresh && state is HomeScreenSuccess) {
+          isPinned = (state as HomeScreenSuccess).isPinned;
+        } else {
+          isPinned = false;
+        }
+
+        // events checking
+        if (event is HomeScreenStarted || event is HomeScreenRefresh) {
           final taskLists = await taskListRepository.getAllTaskLists(isPinned);
           if (taskLists.isEmpty) {
             emit(HomeScreenEmptyState(isPinned: isPinned));
           } else {
             emit(HomeScreenSuccess(taskLists: taskLists, isPinned: isPinned));
           }
-        } catch (e) {
-          emit(
-            HomeScreenError(
-              appException: e is AppException ? e : AppException(),
-            ),
-          );
-        }
-      } else if (event is HomeScreenToggleTaskCompletion) {
-        try {
-          bool isPinned;
-          if (state is HomeScreenSuccess) {
-            isPinned = (state as HomeScreenSuccess).isPinned;
-          } else {
-            isPinned = false;
-          }
+        } else if (event is HomeScreenToggleTaskCompletion) {
           await taskListRepository.toggleTaskCompletion(
             event.taskListID,
             event.taskItemID,
           );
-          final taskLists = await taskListRepository.getAllTaskLists(isPinned);
-          emit(HomeScreenSuccess(taskLists: taskLists, isPinned: isPinned));
-        } catch (e) {
-          emit(
-            HomeScreenError(
-              appException: e is AppException ? e : AppException(),
-            ),
-          );
-        }
-      } else if (event is HomeScreenToggleTaskListExpanded) {
-        try {
+        } else if (event is HomeScreenToggleTaskListExpanded) {
           await taskListRepository.toggleTaskListExpansion(event.taskListID);
-
-          if (state is HomeScreenSuccess) {
-            final currentState = (state as HomeScreenSuccess);
-            final updatedLists = await taskListRepository.getAllTaskLists(
-              currentState.isPinned,
-            );
-
-            emit(
-              HomeScreenSuccess(
-                taskLists: updatedLists,
-                isPinned: currentState.isPinned,
-              ),
-            );
-          } else {
-            throw Exception('Unsupported state');
-          }
-        } catch (e) {
-          emit(
-            HomeScreenError(
-              appException: e is AppException ? e : AppException(),
-            ),
-          );
-        }
-      } else if(event is HomeScreenDeleteTaskList){
-        try{
+        } else if (event is HomeScreenDeleteTaskList) {
           await taskListRepository.deleteTaskList(event.taskListID);
-         }catch (e) {
-          emit(
-            HomeScreenError(
-              appException: e is AppException ? e : AppException(),
-            ),
-          );
+        } else {
+          throw Exception('Event is unsupported');
         }
-      }
-      
-      else {
-        throw Exception('Event is unsupported');
+      } catch (e) {
+        emit(
+          HomeScreenError(appException: e is AppException ? e : AppException()),
+        );
       }
     });
   }

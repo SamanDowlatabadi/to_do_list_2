@@ -107,19 +107,6 @@ class TaskListHiveDataSource implements ITaskListDataSource {
   }
 
   @override
-  Future<void> saveAllTaskLists(List<TaskList> taskLists) async {
-    try {
-      final box = Hive.box<TaskListHiveModule>(boxName);
-      await box.clear();
-      await box.putAll({
-        for (var taskList in taskLists) taskList.taskListID: taskList.toHive(),
-      });
-    } catch (e) {
-      throw Exception(e.toString());
-    }
-  }
-
-  @override
   Future<void> togglePinTaskList(String taskListID) async {
     try {
       final box = Hive.box<TaskListHiveModule>(boxName);
@@ -200,18 +187,6 @@ class TaskListHiveDataSource implements ITaskListDataSource {
     }
   }
 
-  @override
-  Future<void> updateTaskList(TaskList updatedTaskList) async {
-    try {
-      final box = Hive.box<TaskListHiveModule>(boxName);
-      if (!box.containsKey(updatedTaskList.taskListID)) {
-        throw Exception('Task List not found');
-      }
-      await box.put(updatedTaskList.taskListID, updatedTaskList.toHive());
-    } catch (e) {
-      throw Exception(e.toString());
-    }
-  }
 
   @override
   Future<TaskList> getTaskList(String taskListID) async {

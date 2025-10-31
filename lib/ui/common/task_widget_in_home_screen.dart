@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:to_do_list/data/task_list_module.dart';
-import 'package:to_do_list/ui/add_edit_list_screen/add_edit_list_screen.dart';
+import 'package:to_do_list/ui/task_list_screen/task_list_screen.dart';
 
 class TaskWidgetInHomeScreen extends StatefulWidget {
   final TaskList taskList;
@@ -61,7 +61,7 @@ class _TaskWidgetInHomeScreenState extends State<TaskWidgetInHomeScreen>
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (_) =>
-                AddEditListScreen(taskListID: widget.taskList.taskListID),
+                TaskListScreen(taskListID: widget.taskList.taskListID),
           ),
         );
       },

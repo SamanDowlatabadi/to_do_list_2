@@ -41,10 +41,7 @@ class TaskListRepository implements ITaskListRepository {
     return taskLists;
   }
 
-  @override
-  Future<void> saveAllTaskLists(List<TaskList> taskLists) async {
-    await taskListDataSource.saveAllTaskLists(taskLists);
-  }
+
 
   @override
   Future<void> togglePinTaskList(String taskListID) async {
@@ -63,13 +60,9 @@ class TaskListRepository implements ITaskListRepository {
 
 
   @override
-  Future<void> updateTaskList(TaskList updatedTaskList) async {
-    await taskListDataSource.updateTaskList(updatedTaskList);
-  }
-
-  @override
   Future<void> toggleTaskListExpansion(String taskListID) async {
     await taskListDataSource.toggleTaskListExpansion(taskListID);
+    ITaskListRepository.taskListNotifier.notifyChanged();
   }
 
   @override

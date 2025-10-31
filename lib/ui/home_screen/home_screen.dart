@@ -1,19 +1,18 @@
-import 'package:custom_sliding_segmented_control/custom_sliding_segmented_control.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:to_do_list/data/repository/task_list_repository/i_task_list_repository.dart';
 import 'package:to_do_list/data/task_list_module.dart';
-import 'package:to_do_list/ui/add_edit_list_screen/add_edit_list_screen.dart';
 import 'package:to_do_list/ui/common/app_error_widget.dart';
-import 'package:to_do_list/ui/common/utils.dart';
-import 'package:to_do_list/ui/home_screen/empty_state_home.dart';
-import 'package:to_do_list/ui/home_screen/task_widget_in_home_screen.dart';
-import 'package:to_do_list/ui/search_screen/search_screen.dart';
-
+import 'package:to_do_list/ui/common/home_screen_app_bar.dart';
+import 'package:to_do_list/ui/common/home_screen_slider.dart';
+import 'package:to_do_list/ui/common/empty_state_home.dart';
+import 'package:to_do_list/ui/common/task_widget_in_home_screen.dart';
+import 'package:to_do_list/ui/task_list_screen/task_list_screen.dart';
 import 'home_screen_bloc/home_screen_bloc.dart';
 
 class HomeScreen extends StatelessWidget {
+
   const HomeScreen({super.key});
 
   @override
@@ -30,38 +29,19 @@ class HomeScreen extends StatelessWidget {
         builder: (context, state) {
           if (state is HomeScreenLoading) {
             return const Center(child: CircularProgressIndicator());
-          } else if (state is HomeScreenError) {
+          }
+          else if (state is HomeScreenError) {
             return AppErrorWidget(
               exception: state.appException,
               onPressed: () {
                 context.read<HomeScreenBloc>().add(HomeScreenRefresh());
               },
             );
-          } else if (state is HomeScreenSuccess) {
+          }
+          else if (state is HomeScreenSuccess) {
             return Scaffold(
               backgroundColor: Colors.white,
-              appBar: AppBar(
-                elevation: 0,
-                shadowColor: Colors.transparent,
-                actionsPadding: const EdgeInsets.only(right: 21),
-                actions: [
-                  IconButton(
-                    onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const SearchScreen()));
-                    },
-                    icon: const Icon(Icons.search, size: 27),
-                  ),
-                ],
-                titleSpacing: 21,
-                title: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Image.asset('assets/images/app_bar/app_bar_dooit_logo.png'),
-                    const SizedBox(width: 12),
-                    const Text('Dooit'),
-                  ],
-                ),
-              ),
+              appBar: homeScreenAppBar(context),
               floatingActionButton: SizedBox(
                 height: 65,
                 width: 65,
@@ -73,7 +53,7 @@ class HomeScreen extends StatelessWidget {
                     final sample = sampleTaskList();
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => AddEditListScreen(
+                        builder: (context) =>TaskListScreen(
                           taskListID: sample.taskListID,
                           isNewTaskList: true,
                         ),
@@ -86,49 +66,7 @@ class HomeScreen extends StatelessWidget {
               body: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Center(
-                    child: CustomSlidingSegmentedControl(
-                      fixedWidth: MediaQuery.of(context).size.width / 2 - 24,
-                      initialValue: state.isPinned
-                          ? AllListPinnedEnum.pinned
-                          : AllListPinnedEnum.allList,
-                      innerPadding: EdgeInsets.zero,
-                      thumbDecoration: BoxDecoration(
-                        color: Colors.black,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      decoration: BoxDecoration(
-                        color: const Color(0xffE5E5E5),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      height: 47,
-                      children: {
-                        AllListPinnedEnum.allList: Text(
-                          'All List',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            color: state.isPinned
-                                ? Colors.black.withAlpha(100)
-                                : Colors.white,
-                          ),
-                        ),
-                        AllListPinnedEnum.pinned: Text(
-                          'Pinned',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            color: state.isPinned
-                                ? Colors.white
-                                : Colors.black.withAlpha(100),
-                          ),
-                        ),
-                      },
-                      onValueChanged: (value) {
-                        context.read<HomeScreenBloc>().add(
-                          HomeScreenStarted(isPinned: !state.isPinned),
-                        );
-                      },
-                    ),
-                  ),
+                  HomeScreenSlider(isPinned: state.isPinned,),
                   const SizedBox(height: 50),
                   Expanded(
                     child: ListView.builder(
@@ -166,91 +104,37 @@ class HomeScreen extends StatelessWidget {
                 ],
               ),
             );
-          } else if (state is HomeScreenEmptyState) {
+          }
+          else if (state is HomeScreenEmptyState) {
             return Scaffold(
               backgroundColor: Colors.white,
-              appBar: AppBar(
-                elevation: 0,
-                shadowColor: Colors.transparent,
-                actionsPadding: const EdgeInsets.only(right: 21),
-                actions: const [Icon(Icons.search, size: 27)],
-                titleSpacing: 21,
-                title: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Image.asset('assets/images/app_bar/app_bar_dooit_logo.png'),
-                    const SizedBox(width: 12),
-                    const Text('Dooit'),
-                  ],
-                ),
-              ),
+              appBar: homeScreenAppBar(context),
               body: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Center(
-                    child: CustomSlidingSegmentedControl(
-                      fixedWidth: MediaQuery.of(context).size.width / 2 - 24,
-                      initialValue: state.isPinned
-                          ? AllListPinnedEnum.pinned
-                          : AllListPinnedEnum.allList,
-                      innerPadding: EdgeInsets.zero,
-                      thumbDecoration: BoxDecoration(
-                        color: Colors.black,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      decoration: BoxDecoration(
-                        color: const Color(0xffE5E5E5),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      height: 47,
-                      children: {
-                        AllListPinnedEnum.allList: Text(
-                          'All List',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            color: state.isPinned
-                                ? Colors.black.withAlpha(100)
-                                : Colors.white,
-                          ),
-                        ),
-                        AllListPinnedEnum.pinned: Text(
-                          'Pinned',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            color: state.isPinned
-                                ? Colors.white
-                                : Colors.black.withAlpha(100),
-                          ),
-                        ),
-                      },
-                      onValueChanged: (value) {
-                        context.read<HomeScreenBloc>().add(
-                          HomeScreenStarted(isPinned: !state.isPinned),
-                        );
-                      },
-                    ),
-                  ),
+                  HomeScreenSlider(isPinned: state.isPinned,),
                   const SizedBox(height: 50),
                   Expanded(
                     child: EmptyStateWidget(
+                      isPinned: state.isPinned,
                       newListFunc: () {
                         final sample = sampleTaskList();
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => AddEditListScreen(
+                            builder: (context) => TaskListScreen(
                               taskListID: sample.taskListID,
                               isNewTaskList: true,
                             ),
                           ),
                         );
                       },
-                      isPinned: state.isPinned,
                     ),
                   ),
                 ],
               ),
             );
-          }  else {
+          }
+          else {
             throw Exception('State is not supported');
           }
         },

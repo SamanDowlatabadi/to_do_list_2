@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:to_do_list/data/repository/task_list_repository/i_task_list_repository.dart';
 import 'package:to_do_list/ui/common/app_error_widget.dart';
-import 'package:to_do_list/ui/home_screen/task_widget_in_home_screen.dart';
+import 'package:to_do_list/ui/common/task_widget_in_home_screen.dart';
 import 'package:to_do_list/ui/search_screen/search_screen_bloc/search_screen_bloc.dart';
 
 class SearchScreen extends StatelessWidget {

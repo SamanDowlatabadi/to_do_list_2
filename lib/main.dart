@@ -5,7 +5,8 @@ import 'package:to_do_list/data/source/task_list_data_source/task_list_hive_data
 import 'package:to_do_list/data/source/task_list_data_source/task_list_hive_data_source/module/task_list_hive_module.dart';
 import 'package:to_do_list/data/source/task_list_data_source/task_list_hive_data_source/task_list_hive_data_source.dart';
 import 'package:to_do_list/data/task_list_label.dart';
-import 'package:to_do_list/ui/on_boarding/on_boarding.dart';
+
+import 'ui/on_boarding_screen/on_boarding_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

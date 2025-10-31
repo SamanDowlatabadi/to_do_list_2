@@ -23,13 +23,9 @@ abstract class ITaskListRepository {
 
   Future<TaskItem> getTaskItem(String taskListID, String taskItemID);
 
-  Future<void> saveAllTaskLists(List<TaskList> taskLists);
-
   Future<void> addTaskList(String taskListID);
 
   Future<void> deleteTaskList(String taskListID);
-
-  Future<void> updateTaskList(TaskList updatedTaskList);
 
   Future<void> togglePinTaskList(String taskListID);
 

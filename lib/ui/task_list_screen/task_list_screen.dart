@@ -2,31 +2,40 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:to_do_list/data/repository/task_list_repository/i_task_list_repository.dart';
-import 'package:to_do_list/ui/add_edit_list_screen/add_edit_list_screen_bloc/add_edit_list_screen_bloc.dart';
 import 'package:to_do_list/ui/common/app_error_widget.dart';
 
-class AddEditListScreen extends StatelessWidget {
+import 'task_list_screen_bloc/task_list_screen_bloc.dart';
+
+class TaskListScreen extends StatelessWidget {
   final String taskListID;
   final bool? isNewTaskList;
-  const AddEditListScreen({super.key, required this.taskListID, this.isNewTaskList = false});
+
+  const TaskListScreen({
+    super.key,
+    required this.taskListID,
+    this.isNewTaskList = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) {
-        final addEditListScreenBloc = AddEditListScreenBloc(
+        final taskListScreenBloc = TaskListScreenBloc(
           taskListRepository: taskListRepository,
         );
-        addEditListScreenBloc.add(
-          AddEditListScreenStarted(taskListID: taskListID, isNewTaskList: isNewTaskList),
+        taskListScreenBloc.add(
+          TaskListScreenStarted(
+            taskListID: taskListID,
+            isNewTaskList: isNewTaskList,
+          ),
         );
-        return addEditListScreenBloc;
+        return taskListScreenBloc;
       },
-      child: BlocBuilder<AddEditListScreenBloc, AddEditListScreenState>(
+      child: BlocBuilder<TaskListScreenBloc, TaskListScreenState>(
         builder: (context, state) {
-          if (state is AddEditListScreenLoading) {
+          if (state is TaskListScreenLoading) {
             return const Center(child: CircularProgressIndicator());
-          } else if (state is AddEditListScreenSuccess) {
+          } else if (state is TaskListScreenSuccess) {
             final taskList = state.taskList;
             final isEditingTaskTitle = taskList.taskListID == state.editingID;
             final isAddingTask = state.isAddingTask;
@@ -35,24 +44,24 @@ class AddEditListScreen extends StatelessWidget {
               behavior: HitTestBehavior.translucent,
               onTap: () {
                 if (isEditingTaskTitle) {
-                  context.read<AddEditListScreenBloc>().add(
-                    AddEditListScreenEditTaskListTitleSaved(
+                  context.read<TaskListScreenBloc>().add(
+                    TaskListScreenEditTaskListTitleSaved(
                       taskListID: taskListID,
                       taskListNewTitle: state.editingTitle!.trim(),
                     ),
                   );
                 } else if (state.editingID != null &&
                     state.editingTitle != null) {
-                  context.read<AddEditListScreenBloc>().add(
-                    AddEditListScreenEditTaskTitleSaved(
+                  context.read<TaskListScreenBloc>().add(
+                    TaskListScreenEditTaskTitleSaved(
                       taskListID: taskListID,
                       taskItemID: state.editingID!,
                       taskItemNewTitle: state.editingTitle!.trim(),
                     ),
                   );
                 } else if (isAddingTask) {
-                  context.read<AddEditListScreenBloc>().add(
-                    AddEditListScreenStartAddTaskSubmitted(
+                  context.read<TaskListScreenBloc>().add(
+                    TaskListScreenStartAddTaskSubmitted(
                       taskListID: taskListID,
                       newTaskItemTitle: addNewTaskTitle,
                     ),
@@ -73,8 +82,8 @@ class AddEditListScreen extends StatelessWidget {
                   actions: [
                     ElevatedButton(
                       onPressed: () {
-                        context.read<AddEditListScreenBloc>().add(
-                          AddEditListScreenTaskListTogglePin(
+                        context.read<TaskListScreenBloc>().add(
+                          TaskListScreenTaskListTogglePin(
                             taskListID: taskListID,
                           ),
                         );
@@ -146,16 +155,16 @@ class AddEditListScreen extends StatelessWidget {
                                 ),
                               ),
                               onChanged: (value) {
-                                context.read<AddEditListScreenBloc>().add(
-                                  AddEditListScreenEditTaskListTitleChanged(
+                                context.read<TaskListScreenBloc>().add(
+                                  TaskListScreenEditTaskListTitleChanged(
                                     taskListID: taskListID,
                                     newTaskListTitle: value,
                                   ),
                                 );
                               },
                               onSubmitted: (value) {
-                                context.read<AddEditListScreenBloc>().add(
-                                  AddEditListScreenEditTaskListTitleSaved(
+                                context.read<TaskListScreenBloc>().add(
+                                  TaskListScreenEditTaskListTitleSaved(
                                     taskListID: taskListID,
                                     taskListNewTitle: value.trim(),
                                   ),
@@ -164,8 +173,8 @@ class AddEditListScreen extends StatelessWidget {
                             )
                           : GestureDetector(
                               onTap: () {
-                                context.read<AddEditListScreenBloc>().add(
-                                  AddEditTaskScreenStartEditTaskList(
+                                context.read<TaskListScreenBloc>().add(
+                                  TaskTaskScreenStartEditTaskList(
                                     taskListID: taskListID,
                                   ),
                                 );
@@ -211,8 +220,8 @@ class AddEditListScreen extends StatelessWidget {
                                       },
                                       onSubmitted: (value) {
                                         addNewTaskTitle = value;
-                                        context.read<AddEditListScreenBloc>().add(
-                                          AddEditListScreenStartAddTaskSubmitted(
+                                        context.read<TaskListScreenBloc>().add(
+                                          TaskListScreenStartAddTaskSubmitted(
                                             taskListID: taskListID,
                                             newTaskItemTitle: addNewTaskTitle,
                                           ),
@@ -231,9 +240,9 @@ class AddEditListScreen extends StatelessWidget {
                                       title: const Text('Add new task'),
                                       onTap: () {
                                         context
-                                            .read<AddEditListScreenBloc>()
+                                            .read<TaskListScreenBloc>()
                                             .add(
-                                              AddEditListScreenStartAddTask(
+                                              TaskListScreenStartAddTask(
                                                 taskListID: taskListID,
                                               ),
                                             );
@@ -255,8 +264,8 @@ class AddEditListScreen extends StatelessWidget {
                                   const Icon(Icons.drag_indicator),
                                   GestureDetector(
                                     onTap: () {
-                                      context.read<AddEditListScreenBloc>().add(
-                                        AddEditListScreenToggleTaskCompletion(
+                                      context.read<TaskListScreenBloc>().add(
+                                        TaskListScreenToggleTaskCompletion(
                                           taskListID: taskListID,
                                           taskItemID: taskItem.taskItemID,
                                         ),
@@ -293,8 +302,8 @@ class AddEditListScreen extends StatelessWidget {
                                             ),
                                           ),
                                       onChanged: (value) {
-                                        context.read<AddEditListScreenBloc>().add(
-                                          AddEditListScreenEditTaskTitleChanged(
+                                        context.read<TaskListScreenBloc>().add(
+                                          TaskListScreenEditTaskTitleChanged(
                                             taskListID: taskListID,
                                             taskItemID: taskItem.taskItemID,
                                             newTaskItemTitle: value,
@@ -302,8 +311,8 @@ class AddEditListScreen extends StatelessWidget {
                                         );
                                       },
                                       onSubmitted: (value) {
-                                        context.read<AddEditListScreenBloc>().add(
-                                          AddEditListScreenEditTaskTitleSaved(
+                                        context.read<TaskListScreenBloc>().add(
+                                          TaskListScreenEditTaskTitleSaved(
                                             taskListID: taskListID,
                                             taskItemID: taskItem.taskItemID,
                                             taskItemNewTitle: value.trim(),
@@ -314,9 +323,9 @@ class AddEditListScreen extends StatelessWidget {
                                   : GestureDetector(
                                       onTap: () {
                                         context
-                                            .read<AddEditListScreenBloc>()
+                                            .read<TaskListScreenBloc>()
                                             .add(
-                                              AddEditTaskScreenStartEditTask(
+                                              TaskTaskScreenStartEditTask(
                                                 taskListID: taskListID,
                                                 taskItemID: taskItem.taskItemID,
                                               ),
@@ -334,8 +343,8 @@ class AddEditListScreen extends StatelessWidget {
                                     ),
                               trailing: GestureDetector(
                                 onTap: () {
-                                  context.read<AddEditListScreenBloc>().add(
-                                    AddEditListScreenDeleteTaskItem(
+                                  context.read<TaskListScreenBloc>().add(
+                                    TaskListScreenDeleteTaskItem(
                                       taskListID: taskListID,
                                       taskItemID: taskItem.taskItemID,
                                     ),
@@ -352,7 +361,7 @@ class AddEditListScreen extends StatelessWidget {
                 ),
               ),
             );
-          } else if (state is AddEditListScreenError) {
+          } else if (state is TaskListScreenError) {
             return AppErrorWidget(
               exception: state.appException,
               onPressed: () {},
