@@ -289,4 +289,18 @@ class TaskListHiveDataSource implements ITaskListDataSource {
       throw Exception(e.toString());
     }
   }
+
+  @override
+  Future<List<TaskList>> getSearchedTaskLists(String searchTerm) async{
+    try {
+      final box = Hive.box<TaskListHiveModule>(boxName);
+      final List<TaskListHiveModule> taskListsHiveModule = box.values.toList();
+      final List<TaskList> taskLists = taskListsHiveModule.map((e) => e.toTaskList()).toList();
+
+        return taskLists.where((e) => e.taskListTitle.trim().toLowerCase().contains(searchTerm.trim().toLowerCase())).toList();
+
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
 }

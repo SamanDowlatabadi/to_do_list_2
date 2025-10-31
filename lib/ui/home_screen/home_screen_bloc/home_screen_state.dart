@@ -23,3 +23,4 @@ class HomeScreenEmptyState extends HomeScreenState {
 
   HomeScreenEmptyState({required this.isPinned});
 }
+

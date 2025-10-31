@@ -17,6 +17,8 @@ abstract class ITaskListRepository {
 
   Future<List<TaskList>> getAllTaskLists(bool isPinned);
 
+  Future<List<TaskList>> getSearchedTaskLists(String searchTerm);
+
   Future<TaskList> getTaskList(String taskListID);
 
   Future<TaskItem> getTaskItem(String taskListID, String taskItemID);

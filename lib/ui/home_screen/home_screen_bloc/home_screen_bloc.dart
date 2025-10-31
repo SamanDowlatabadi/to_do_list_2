@@ -103,7 +103,9 @@ class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
             ),
           );
         }
-      }else {
+      }
+      
+      else {
         throw Exception('Event is unsupported');
       }
     });

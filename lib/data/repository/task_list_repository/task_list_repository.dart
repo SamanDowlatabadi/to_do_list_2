@@ -93,4 +93,10 @@ class TaskListRepository implements ITaskListRepository {
     await taskListDataSource.editTaskListTitle( taskListID,   taskListNewTitle);
     ITaskListRepository.taskListNotifier.notifyChanged();
   }
+
+  @override
+  Future<List<TaskList>> getSearchedTaskLists(String searchTerm) async{
+    return await taskListDataSource.getSearchedTaskLists(searchTerm);
+  }
+
 }

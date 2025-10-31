@@ -9,6 +9,7 @@ import 'package:to_do_list/ui/common/app_error_widget.dart';
 import 'package:to_do_list/ui/common/utils.dart';
 import 'package:to_do_list/ui/home_screen/empty_state_home.dart';
 import 'package:to_do_list/ui/home_screen/task_widget_in_home_screen.dart';
+import 'package:to_do_list/ui/search_screen/search_screen.dart';
 
 import 'home_screen_bloc/home_screen_bloc.dart';
 
@@ -43,7 +44,14 @@ class HomeScreen extends StatelessWidget {
                 elevation: 0,
                 shadowColor: Colors.transparent,
                 actionsPadding: const EdgeInsets.only(right: 21),
-                actions: const [Icon(Icons.search, size: 27)],
+                actions: [
+                  IconButton(
+                    onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const SearchScreen()));
+                    },
+                    icon: const Icon(Icons.search, size: 27),
+                  ),
+                ],
                 titleSpacing: 21,
                 title: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -78,7 +86,6 @@ class HomeScreen extends StatelessWidget {
               body: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const SizedBox(height: 41),
                   Center(
                     child: CustomSlidingSegmentedControl(
                       fixedWidth: MediaQuery.of(context).size.width / 2 - 24,
@@ -131,13 +138,12 @@ class HomeScreen extends StatelessWidget {
                         return TaskWidgetInHomeScreen(
                           taskList: taskList,
                           key: ValueKey(taskList.taskListID),
-                          deleteTaskList: ()
-                            =>
-                                context.read<HomeScreenBloc>().add(
-                                  HomeScreenDeleteTaskList(
-                                    taskListID: taskList.taskListID,
-                                  ),
+                          deleteTaskList: () =>
+                              context.read<HomeScreenBloc>().add(
+                                HomeScreenDeleteTaskList(
+                                  taskListID: taskList.taskListID,
                                 ),
+                              ),
 
                           toggleTaskListExpansion: () =>
                               context.read<HomeScreenBloc>().add(
@@ -181,7 +187,6 @@ class HomeScreen extends StatelessWidget {
               body: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const SizedBox(height: 41),
                   Center(
                     child: CustomSlidingSegmentedControl(
                       fixedWidth: MediaQuery.of(context).size.width / 2 - 24,
@@ -245,7 +250,7 @@ class HomeScreen extends StatelessWidget {
                 ],
               ),
             );
-          } else {
+          }  else {
             throw Exception('State is not supported');
           }
         },
