@@ -1,3 +1,4 @@
+
 # 📝 To Do List App
 
 The **To Do List** project is a cross-platform mobile application built with **Flutter** and **Dart**.  
@@ -80,3 +81,5 @@ The app’s user interface is based on a Figma community design, available here:
 <p align="center">
   <img src="assets/app_demo/To_do_list_Preview.gif" width="300" alt="App Demo">
 </p>
+
+![To-do-list_Preview](https://github.com/user-attachments/assets/3a4bc3a8-2358-4ad8-a690-e569e0806c3f)
