@@ -25,13 +25,19 @@ abstract class ITaskListRepository {
 
   Future<void> addTaskList(String taskListID);
 
+  Future<void> saveAllTaskLists(List<TaskList> taskLists);
+
   Future<void> deleteTaskList(String taskListID);
 
   Future<void> togglePinTaskList(String taskListID);
 
   Future<void> addTaskItemToTaskList(String taskListID, String taskItemTitle);
 
-  Future<void> editTaskItemTitle(String taskListID, String taskItemID, String taskItemNewTitle);
+  Future<void> editTaskItemTitle(
+    String taskListID,
+    String taskItemID,
+    String taskItemNewTitle,
+  );
 
   Future<void> editTaskListTitle(String taskListID, String taskListNewTitle);
 

@@ -5,8 +5,9 @@ import 'package:to_do_list/ui/common/utils.dart';
 
 import '../home_screen/home_screen_bloc/home_screen_bloc.dart';
 
-class HomeScreenSlider extends StatelessWidget{
+class HomeScreenSlider extends StatelessWidget {
   final bool isPinned;
+
   const HomeScreenSlider({super.key, required this.isPinned});
 
   @override
@@ -32,18 +33,14 @@ class HomeScreenSlider extends StatelessWidget{
             'All List',
             style: TextStyle(
               fontWeight: FontWeight.w600,
-              color: isPinned
-                  ? Colors.black.withAlpha(100)
-                  : Colors.white,
+              color: isPinned ? Colors.black.withAlpha(100) : Colors.white,
             ),
           ),
           AllListPinnedEnum.pinned: Text(
             'Pinned',
             style: TextStyle(
               fontWeight: FontWeight.w600,
-              color: isPinned
-                  ? Colors.white
-                  : Colors.black.withAlpha(100),
+              color: isPinned ? Colors.white : Colors.black.withAlpha(100),
             ),
           ),
         },
@@ -55,5 +52,4 @@ class HomeScreenSlider extends StatelessWidget{
       ),
     );
   }
-
 }

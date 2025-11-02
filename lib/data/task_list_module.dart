@@ -40,23 +40,22 @@ class TaskList {
     };
   }
 
-  factory TaskList.fromJson(Map<String, dynamic> json) =>
-      TaskList(
-        taskListTitle: json["taskListTitle"],
-        taskListPinned: json['taskListPinned'],
-        taskListLabel: TaskListLabel.fromJson(json['taskListLabel']),
-        taskListID: json['taskListID'],
-        taskListItems: (json['taskListItems'] as List)
-            .map((e) => TaskItem.fromJson(e))
-            .toList(),
-        taskListIsExpanded: json['taskListIsExpanded'],
-      );
+  factory TaskList.fromJson(Map<String, dynamic> json) => TaskList(
+    taskListTitle: json["taskListTitle"],
+    taskListPinned: json['taskListPinned'],
+    taskListLabel: TaskListLabel.fromJson(json['taskListLabel']),
+    taskListID: json['taskListID'],
+    taskListItems: (json['taskListItems'] as List)
+        .map((e) => TaskItem.fromJson(e))
+        .toList(),
+    taskListIsExpanded: json['taskListIsExpanded'],
+  );
 }
 
 int getColorFromID(String taskListID) {
   int stableHash = taskListID.codeUnits.fold(
     0,
-        (prev, elem) => prev + elem * 37,
+    (prev, elem) => prev + elem * 37,
   );
 
   final random = Random(stableHash);
@@ -67,8 +66,10 @@ int getColorFromID(String taskListID) {
   return Color.fromARGB(100, red, green, blue).toARGB32();
 }
 
-TaskList sampleTaskList() => TaskList(taskListTitle: 'Title',
-    taskListPinned: false,
-    taskListItems: [],
-    taskListLabel: TaskListLabel.other,
-    taskListIsExpanded: false);
+TaskList sampleTaskList() => TaskList(
+  taskListTitle: 'Title',
+  taskListPinned: false,
+  taskListItems: [],
+  taskListLabel: TaskListLabel.other,
+  taskListIsExpanded: false,
+);

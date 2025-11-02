@@ -10,7 +10,13 @@ class TaskListScreenSuccess extends TaskListScreenState {
   final String? editingID;
   final String? editingTitle;
   final bool isAddingTask;
-  TaskListScreenSuccess( {required this.taskList,  this.editingID ,  this.editingTitle , this.isAddingTask = false});
+
+  TaskListScreenSuccess({
+    required this.taskList,
+    this.editingID,
+    this.editingTitle,
+    this.isAddingTask = false,
+  });
 }
 
 class TaskListScreenError extends TaskListScreenState {

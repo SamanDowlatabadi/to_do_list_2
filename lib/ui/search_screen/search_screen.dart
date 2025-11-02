@@ -68,7 +68,7 @@ class SearchScreen extends StatelessWidget {
                     contentPadding: const EdgeInsets.symmetric(vertical: 8),
                   ),
                 );
-              }
+              },
             ),
             actions: [
               TextButton(
@@ -90,7 +90,7 @@ class SearchScreen extends StatelessWidget {
             builder: (context, state) {
               if (state is SearchScreenSuccess) {
                 return Padding(
-                  padding: const EdgeInsets.only(top: 41,),
+                  padding: const EdgeInsets.only(top: 41),
                   child: Column(
                     children: [
                       Expanded(
@@ -117,9 +117,9 @@ class SearchScreen extends StatelessWidget {
                   exception: state.appException,
                   onPressed: () {},
                 );
-              } else if(state is SearchScreenLoading){
+              } else if (state is SearchScreenLoading) {
                 return const Center(child: CircularProgressIndicator());
-              }else {
+              } else {
                 throw Exception();
               }
             },

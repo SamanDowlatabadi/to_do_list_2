@@ -239,13 +239,11 @@ class TaskListScreen extends StatelessWidget {
                                       ),
                                       title: const Text('Add new task'),
                                       onTap: () {
-                                        context
-                                            .read<TaskListScreenBloc>()
-                                            .add(
-                                              TaskListScreenStartAddTask(
-                                                taskListID: taskListID,
-                                              ),
-                                            );
+                                        context.read<TaskListScreenBloc>().add(
+                                          TaskListScreenStartAddTask(
+                                            taskListID: taskListID,
+                                          ),
+                                        );
                                       },
                                     );
                             }
@@ -322,14 +320,12 @@ class TaskListScreen extends StatelessWidget {
                                     )
                                   : GestureDetector(
                                       onTap: () {
-                                        context
-                                            .read<TaskListScreenBloc>()
-                                            .add(
-                                              TaskTaskScreenStartEditTask(
-                                                taskListID: taskListID,
-                                                taskItemID: taskItem.taskItemID,
-                                              ),
-                                            );
+                                        context.read<TaskListScreenBloc>().add(
+                                          TaskTaskScreenStartEditTask(
+                                            taskListID: taskListID,
+                                            taskItemID: taskItem.taskItemID,
+                                          ),
+                                        );
                                       },
                                       child: Text(
                                         taskItem.taskItemTitle,

@@ -20,7 +20,7 @@ class TaskListScreenBloc
   TaskListScreenBloc({required this.taskListRepository})
     : super(TaskListScreenLoading()) {
     _onChangedRepository = () {
-      if(state is TaskListScreenSuccess){
+      if (state is TaskListScreenSuccess) {
         add(
           TaskListScreenStarted(
             taskListID: (state as TaskListScreenSuccess).taskList.taskListID,
@@ -42,7 +42,6 @@ class TaskListScreenBloc
           emit(TaskListScreenSuccess(taskList: taskList));
         } else if (event is TaskListScreenTaskListTogglePin) {
           await taskListRepository.togglePinTaskList(event.taskListID);
-
         } else if (event is TaskListScreenToggleTaskCompletion) {
           await taskListRepository.toggleTaskCompletion(
             event.taskListID,
@@ -86,7 +85,6 @@ class TaskListScreenBloc
               event.taskItemID,
             );
           }
-
         }
         //////////////////////////////////////////////////////////////////////////
         else if (event is TaskTaskScreenStartEditTaskList) {
@@ -115,17 +113,17 @@ class TaskListScreenBloc
               event.taskListNewTitle.trim(),
             );
           }
-
         } else if (event is TaskListScreenDeleteTaskItem) {
           await taskListRepository.deleteTaskItem(
             event.taskListID,
             event.taskItemID,
           );
-
         } else if (event is TaskListScreenStartAddTask) {
-
           emit(
-            TaskListScreenSuccess(taskList: (state as TaskListScreenSuccess).taskList, isAddingTask: true),
+            TaskListScreenSuccess(
+              taskList: (state as TaskListScreenSuccess).taskList,
+              isAddingTask: true,
+            ),
           );
         } else if (event is TaskListScreenStartAddTaskSubmitted) {
           if (event.newTaskItemTitle.trim().isNotEmpty) {
@@ -137,9 +135,7 @@ class TaskListScreenBloc
           final taskList = await taskListRepository.getTaskList(
             event.taskListID,
           );
-          emit(
-            TaskListScreenSuccess(taskList: taskList, isAddingTask: false),
-          );
+          emit(TaskListScreenSuccess(taskList: taskList, isAddingTask: false));
         } else if (event is TaskListScreenDeleteTaskList) {
           await taskListRepository.deleteTaskList(event.taskListID);
         }

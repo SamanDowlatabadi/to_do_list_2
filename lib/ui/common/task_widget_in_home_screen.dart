@@ -12,7 +12,8 @@ class TaskWidgetInHomeScreen extends StatefulWidget {
     super.key,
     required this.taskList,
     required this.toggleTaskItemCompletion,
-    required this.toggleTaskListExpansion, required this.deleteTaskList,
+    required this.toggleTaskListExpansion,
+    required this.deleteTaskList,
   });
 
   @override
@@ -90,7 +91,10 @@ class _TaskWidgetInHomeScreenState extends State<TaskWidgetInHomeScreen>
                       ),
                     ),
                     const Spacer(),
-                    IconButton(onPressed: widget.deleteTaskList, icon: const Icon(Icons.delete))
+                    IconButton(
+                      onPressed: widget.deleteTaskList,
+                      icon: const Icon(Icons.delete),
+                    ),
                   ],
                 ),
                 SizeTransition(

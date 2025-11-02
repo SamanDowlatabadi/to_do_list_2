@@ -12,7 +12,6 @@ import 'package:to_do_list/ui/task_list_screen/task_list_screen.dart';
 import 'home_screen_bloc/home_screen_bloc.dart';
 
 class HomeScreen extends StatelessWidget {
-
   const HomeScreen({super.key});
 
   @override
@@ -29,16 +28,14 @@ class HomeScreen extends StatelessWidget {
         builder: (context, state) {
           if (state is HomeScreenLoading) {
             return const Center(child: CircularProgressIndicator());
-          }
-          else if (state is HomeScreenError) {
+          } else if (state is HomeScreenError) {
             return AppErrorWidget(
               exception: state.appException,
               onPressed: () {
                 context.read<HomeScreenBloc>().add(HomeScreenRefresh());
               },
             );
-          }
-          else if (state is HomeScreenSuccess) {
+          } else if (state is HomeScreenSuccess) {
             return Scaffold(
               backgroundColor: Colors.white,
               appBar: homeScreenAppBar(context),
@@ -53,7 +50,7 @@ class HomeScreen extends StatelessWidget {
                     final sample = sampleTaskList();
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) =>TaskListScreen(
+                        builder: (context) => TaskListScreen(
                           taskListID: sample.taskListID,
                           isNewTaskList: true,
                         ),
@@ -66,7 +63,7 @@ class HomeScreen extends StatelessWidget {
               body: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  HomeScreenSlider(isPinned: state.isPinned,),
+                  HomeScreenSlider(isPinned: state.isPinned),
                   const SizedBox(height: 50),
                   Expanded(
                     child: ListView.builder(
@@ -104,15 +101,14 @@ class HomeScreen extends StatelessWidget {
                 ],
               ),
             );
-          }
-          else if (state is HomeScreenEmptyState) {
+          } else if (state is HomeScreenEmptyState) {
             return Scaffold(
               backgroundColor: Colors.white,
               appBar: homeScreenAppBar(context),
               body: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  HomeScreenSlider(isPinned: state.isPinned,),
+                  HomeScreenSlider(isPinned: state.isPinned),
                   const SizedBox(height: 50),
                   Expanded(
                     child: EmptyStateWidget(
@@ -133,8 +129,7 @@ class HomeScreen extends StatelessWidget {
                 ],
               ),
             );
-          }
-          else {
+          } else {
             throw Exception('State is not supported');
           }
         },

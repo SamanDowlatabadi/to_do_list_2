@@ -11,7 +11,8 @@ part 'on_boarding_screen_event.dart';
 
 part 'on_boarding_screen_state.dart';
 
-class OnBoardingScreenBloc extends Bloc<OnBoardingScreenEvent, OnBoardingScreenState> {
+class OnBoardingScreenBloc
+    extends Bloc<OnBoardingScreenEvent, OnBoardingScreenState> {
   OnBoardingScreenBloc() : super(OnBoardingScreenInitial()) {
     on<OnBoardingScreenIsFirstLaunch>((event, emit) async {
       final prefs = await SharedPreferences.getInstance();

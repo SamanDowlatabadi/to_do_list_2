@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:to_do_list/ui/search_screen/search_screen.dart';
 
-AppBar homeScreenAppBar (BuildContext context){
+AppBar homeScreenAppBar(BuildContext context) {
   return AppBar(
     elevation: 0,
     shadowColor: Colors.transparent,
     actionsPadding: const EdgeInsets.only(right: 21),
-    actions:  [
+    actions: [
       IconButton(
         onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const SearchScreen()));
+          Navigator.of(
+            context,
+          ).push(MaterialPageRoute(builder: (context) => const SearchScreen()));
         },
         icon: const Icon(Icons.search, size: 27),
       ),

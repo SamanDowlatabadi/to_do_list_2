@@ -4,10 +4,10 @@ part of 'task_list_screen_bloc.dart';
 sealed class TaskListScreenEvent {}
 
 class TaskListScreenStarted extends TaskListScreenEvent {
-   final String taskListID;
-   final bool? isNewTaskList;
+  final String taskListID;
+  final bool? isNewTaskList;
 
-  TaskListScreenStarted( {required this.taskListID,this.isNewTaskList = false,});
+  TaskListScreenStarted({required this.taskListID, this.isNewTaskList = false});
 }
 
 class TaskListScreenTaskListTogglePin extends TaskListScreenEvent {
@@ -26,11 +26,14 @@ class TaskListScreenToggleTaskCompletion extends TaskListScreenEvent {
   });
 }
 
-class TaskTaskScreenStartEditTask extends TaskListScreenEvent{
+class TaskTaskScreenStartEditTask extends TaskListScreenEvent {
   final String taskListID;
   final String taskItemID;
 
-  TaskTaskScreenStartEditTask({required this.taskListID, required this.taskItemID});
+  TaskTaskScreenStartEditTask({
+    required this.taskListID,
+    required this.taskItemID,
+  });
 }
 
 class TaskListScreenEditTaskTitleChanged extends TaskListScreenEvent {
@@ -57,8 +60,7 @@ class TaskListScreenEditTaskTitleSaved extends TaskListScreenEvent {
   });
 }
 
-
-class TaskTaskScreenStartEditTaskList extends TaskListScreenEvent{
+class TaskTaskScreenStartEditTaskList extends TaskListScreenEvent {
   final String taskListID;
 
   TaskTaskScreenStartEditTaskList({required this.taskListID});
@@ -84,30 +86,33 @@ class TaskListScreenEditTaskListTitleSaved extends TaskListScreenEvent {
   });
 }
 
-
-class TaskListScreenDeleteTaskItem extends TaskListScreenEvent{
+class TaskListScreenDeleteTaskItem extends TaskListScreenEvent {
   final String taskListID;
   final String taskItemID;
 
-  TaskListScreenDeleteTaskItem({required this.taskListID, required this.taskItemID});
-
+  TaskListScreenDeleteTaskItem({
+    required this.taskListID,
+    required this.taskItemID,
+  });
 }
 
-
-class TaskListScreenStartAddTask extends TaskListScreenEvent{
+class TaskListScreenStartAddTask extends TaskListScreenEvent {
   final String taskListID;
 
   TaskListScreenStartAddTask({required this.taskListID});
 }
 
-class TaskListScreenStartAddTaskSubmitted extends TaskListScreenEvent{
+class TaskListScreenStartAddTaskSubmitted extends TaskListScreenEvent {
   final String taskListID;
   final String newTaskItemTitle;
 
-  TaskListScreenStartAddTaskSubmitted({required this.taskListID, required this.newTaskItemTitle});
+  TaskListScreenStartAddTaskSubmitted({
+    required this.taskListID,
+    required this.newTaskItemTitle,
+  });
 }
 
-class TaskListScreenDeleteTaskList extends TaskListScreenEvent{
+class TaskListScreenDeleteTaskList extends TaskListScreenEvent {
   final String taskListID;
 
   TaskListScreenDeleteTaskList({required this.taskListID});

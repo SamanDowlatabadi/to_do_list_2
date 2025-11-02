@@ -11,7 +11,7 @@ class TaskListRepository implements ITaskListRepository {
   @override
   Future<void> addTaskItemToTaskList(
     String taskListID,
-      String taskItemTitle,
+    String taskItemTitle,
   ) async {
     await taskListDataSource.addTaskItemToTaskList(taskListID, taskItemTitle);
     ITaskListRepository.taskListNotifier.notifyChanged();
@@ -41,7 +41,10 @@ class TaskListRepository implements ITaskListRepository {
     return taskLists;
   }
 
-
+  @override
+  Future<void> saveAllTaskLists(List<TaskList> taskLists) async {
+    await taskListDataSource.saveAllTaskLists(taskLists);
+  }
 
   @override
   Future<void> togglePinTaskList(String taskListID) async {
@@ -58,7 +61,6 @@ class TaskListRepository implements ITaskListRepository {
     ITaskListRepository.taskListNotifier.notifyChanged();
   }
 
-
   @override
   Future<void> toggleTaskListExpansion(String taskListID) async {
     await taskListDataSource.toggleTaskListExpansion(taskListID);
@@ -71,25 +73,35 @@ class TaskListRepository implements ITaskListRepository {
   }
 
   @override
-  Future<TaskItem> getTaskItem(String taskListID, String taskItemID) async{
+  Future<TaskItem> getTaskItem(String taskListID, String taskItemID) async {
     return await taskListDataSource.getTaskItem(taskListID, taskItemID);
   }
 
   @override
-  Future<void> editTaskItemTitle(String taskListID, String taskItemID, String taskItemNewTitle) async{
-    await taskListDataSource.editTaskItemTitle( taskListID,  taskItemID,  taskItemNewTitle);
+  Future<void> editTaskItemTitle(
+    String taskListID,
+    String taskItemID,
+    String taskItemNewTitle,
+  ) async {
+    await taskListDataSource.editTaskItemTitle(
+      taskListID,
+      taskItemID,
+      taskItemNewTitle,
+    );
     ITaskListRepository.taskListNotifier.notifyChanged();
   }
 
   @override
-  Future<void> editTaskListTitle(String taskListID, String taskListNewTitle) async{
-    await taskListDataSource.editTaskListTitle( taskListID,   taskListNewTitle);
+  Future<void> editTaskListTitle(
+    String taskListID,
+    String taskListNewTitle,
+  ) async {
+    await taskListDataSource.editTaskListTitle(taskListID, taskListNewTitle);
     ITaskListRepository.taskListNotifier.notifyChanged();
   }
 
   @override
-  Future<List<TaskList>> getSearchedTaskLists(String searchTerm) async{
+  Future<List<TaskList>> getSearchedTaskLists(String searchTerm) async {
     return await taskListDataSource.getSearchedTaskLists(searchTerm);
   }
-
 }

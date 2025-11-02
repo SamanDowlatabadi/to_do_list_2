@@ -19,10 +19,9 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
   @override
   void initState() {
     super.initState();
-    //_initializeSampleData();
+    _initializeSampleData();
   }
 
-  // ignore: unused_element
   Future<void> _initializeSampleData() async {
     final repository = TaskListRepository(
       taskListDataSource: TaskListHiveDataSource(),
@@ -78,16 +77,16 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
       ),
     ];
     final f = await repository.getAllTaskLists(false);
-    if(f.isEmpty){
-      sampleTaskLists.map((e) => repository.addTaskList(e.taskListID));
+    if (f.isEmpty) {
+      await repository.saveAllTaskLists(sampleTaskLists);
     }
-
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => OnBoardingScreenBloc()..add(OnBoardingScreenIsFirstLaunch()),
+      create: (context) =>
+          OnBoardingScreenBloc()..add(OnBoardingScreenIsFirstLaunch()),
       child: BlocBuilder<OnBoardingScreenBloc, OnBoardingScreenState>(
         builder: (context, state) {
           if (state is OnBoardingScreenInitial) {
